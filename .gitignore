@@ -1,0 +1,4 @@
+*.mp4
+*.xml
+*.wav
+/AutoEditor/yolov5/runs/

@@ -51,6 +51,7 @@ from pysrc.TREE import *
 from pysrc.edit import *
 from pysrc.upload import *
 from pysrc.audio_analysis import *
+from pysrc.screenshot_bgremove import *
 def framerate_resolution_change(inputvideo_path, outputvideo_path, framerate, res):
     if os.path.isfile(outputvideo_path):
         pass
@@ -151,6 +152,7 @@ def run_autoEditor(
     battle_index = [[0 for x in range(0)] for y in range(len(video_list))]
     EMOVE_INDEX = [[0 for x in range(0)] for y in range(len(video_list))]
     dminion_index = [[0 for x in range(0)] for y in range(len(video_list))]
+    bang_index = [[0 for x in range(0)] for y in range(len(video_list))]
 
     star_index = [[0 for x in range(0)] for y in range(len(video_list))]
     kelthuzad_index = [[0 for x in range(0)] for y in range(len(video_list))]
@@ -257,8 +259,7 @@ def run_autoEditor(
                 if yolo_list[i][j][k][0] == '19':
                     EMOVE_INDEX[i].append(j)
                     EMOVE_INDEX[i].sort()
-                    EMOVE_INDEX[i].append(j)
-                    EMOVE_INDEX[i].sort()
+                    bang_index[i].append(j)
 
                 if yolo_list[i][j][k][0] == '21':
                     star_index[i].append(j)
@@ -305,6 +306,9 @@ def run_autoEditor(
     print(yolototal_index)
     print("dminion_index")
     print(dminion_index)
+
+    print("bang_index")
+    print(bang_index)
 
     for i in range(len(video_list)):
         EMOVE_INDEX[i] = set(EMOVE_INDEX[i])
@@ -442,8 +446,11 @@ def run_autoEditor(
                 for k in reconnecting_index[i]:
                     if j == k:
                         fix_house_index[i].append(k)
-            ES_index[i].append(max(fix_house_index[i]))
-            ES_index[i].sort()
+            print("fix_house_index")
+            print(fix_house_index[i])
+            print(max(fix_house_index[i]))
+            BS_index[i].append(max(fix_house_index[i]))
+            BS_index[i].sort()
         
 
     print("ES, BS indexes")
@@ -608,6 +615,17 @@ def run_autoEditor(
         print("pyosi_house_index")
         print(pyosi_house_index)
 
+        # balgyun total house index
+        balgyun_house_index = [[0 for x in range(0)] for y in range(len(balgyun_start[i]))]
+        for j in range(len(balgyun_start[i])):
+            for k in range(balgyun_start[i][j], balgyun_end[i][j]):
+                for l in SUMPYO_index[i]:
+                    if l == k:
+                        balgyun_house_index[j].append(k)
+        
+        print("balgyun_house_index")
+        print(balgyun_house_index)
+
         
         for j in range(len(pyosi_house_index)):
             if len(pyosi_house_index[j]) > framerate:
@@ -711,33 +729,27 @@ def run_autoEditor(
         emove_but_nothing_index[i] = set(emove_but_nothing_index[i])
         emove_but_nothing_index[i] = list(emove_but_nothing_index[i])
         emove_but_nothing_index[i].sort()
-        
-        but_nothing_start_index = []
-        but_nothing_start_index.append(emove_but_nothing_index[i][0])
-        for j in range(len(emove_but_nothing_index[i]) - 1):
-            if emove_but_nothing_index[i][j+1] - emove_but_nothing_index[i][j] != 1:
-                but_nothing_start_index.append(emove_but_nothing_index[i][j])
-                but_nothing_start_index.append(emove_but_nothing_index[i][j+1])
-        but_nothing_start_index.append(emove_but_nothing_index[i][len(emove_but_nothing_index[i])-1])
 
-        for j in range(len(but_nothing_start_index)):
-            if j % 2 == 0:
-                for k in range(but_nothing_start_index[j] + NOTHING_THRESHOLD, but_nothing_start_index[j+1] - NOTHING_THRESHOLD):
-                    while k in SCENE_INDEX[i]:
-                        SCENE_INDEX[i].remove(k)
-                        print(str(k) + "_nothing is removed")
-        
-        print("emove_but_nothing_index")
-        print(emove_but_nothing_index)
-        print("but_nothing_start_index")
-        print(but_nothing_start_index)
-        print(SCENE_INDEX)
+        if len(emove_but_nothing_index[i]) > int(framerate * 0.5):
+            but_nothing_start_index = []
+            but_nothing_start_index.append(emove_but_nothing_index[i][0])
+            for j in range(len(emove_but_nothing_index[i]) - 1):
+                if emove_but_nothing_index[i][j+1] - emove_but_nothing_index[i][j] != 1:
+                    but_nothing_start_index.append(emove_but_nothing_index[i][j])
+                    but_nothing_start_index.append(emove_but_nothing_index[i][j+1])
+            but_nothing_start_index.append(emove_but_nothing_index[i][len(emove_but_nothing_index[i])-1])
 
-
-        
-        
-
-        
+            for j in range(len(but_nothing_start_index)):
+                if j % 2 == 0:
+                    for k in range(but_nothing_start_index[j] + NOTHING_THRESHOLD, but_nothing_start_index[j+1] - NOTHING_THRESHOLD):
+                        while k in SCENE_INDEX[i]:
+                            SCENE_INDEX[i].remove(k)
+                            print(str(k) + "_nothing is removed")
+            
+            print("emove_but_nothing_index")
+            print(emove_but_nothing_index)
+            print("but_nothing_start_index")
+            print(but_nothing_start_index)
 
     # 6-3-0. keltuzhad 
     kelthuzad_remove_index = [[0 for x in range(0)] for y in range(len(video_list))]
@@ -864,9 +876,36 @@ def run_autoEditor(
                 SCENE_INDEX[i].remove(j)
                 print(j, 'gameendtoframeend_removed')
 
+    # 7-1. quest recognize
+    print("balgyun_house_index")
+    print(balgyun_house_index)
+    for i in range(len(video_list)):
+        for j in range(len(balgyun_house_index)):
+            for k in range(len(balgyun_house_index[j])):
+                if ES_index[i][3] < min(balgyun_house_index[j]) < BS_index[i][3] \
+                    and ES_index[i][3] < max(balgyun_house_index[j]) < BS_index[i][3]:
+                    quest_select = (max(balgyun_house_index[j]) + framerate*1/3 ) / framerate
+                    print(quest_select)
+                    break
+        quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+        detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+        print('quest_label')
+        print(quest_label)
+        while len(quest_label) != 1:
+            quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+            detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+            quest_select += framerate * 1/9
+            print("quest_select")
+            print(quest_select)
+            print('quest_label')
+            print(quest_label)
+            
+        for j in range(3):
+            if os.path.exists(current_path + '/yolov5/runs/qdetect/exp/labels/large_quest' + str(i) + '.txt'):
+                quest_image = current_path + '/pysrc/quest/quest' + str(i) + 'bgremoved.png'
+                break
 
-
-    # 7. total index
+    # 8-1. total index
     total_index = [[0 for x in range(0)] for y in range(len(video_list))]
     for i in range(len(video_list)):
         total_index[i].append(SCENE_INDEX[i][0])
@@ -878,7 +917,7 @@ def run_autoEditor(
 
     print(total_index)
 
-    # 8. start, end index
+    # 8-2. start, end index
     start_index = [[0 for x in range(0)] for y in range(len(video_list))]
     end_index = [[0 for x in range(0)] for y in range(len(video_list))]
     for i in range(len(video_list)):

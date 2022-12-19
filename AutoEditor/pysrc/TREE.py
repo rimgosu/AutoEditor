@@ -351,6 +351,8 @@ def run_tree(
 
         track1 = Element('track')
         video.append(track1)
+        trackpng = Element('track')
+        video.append(trackpng)
 
         audio = Element('audio')
         media.append(audio)
@@ -367,8 +369,10 @@ def run_tree(
         duration.text=str(total_duration)
         audio.append(duration)  
         track2 = Element('track')
+        track2.attrib['MZ.TrackTargeted']="0"
         audio.append(track2)
         track3 = Element('track')
+        track3.attrib['MZ.TrackTargeted']="0"
         audio.append(track3)    
 
         start = 0
@@ -409,6 +413,18 @@ def run_tree(
             else:
                 start = end
                 end = start + end_index_frame[i][j+1] - start_index_frame[i][j+1]
+
+        clippng = videoclipitem(
+            video_list[i], 
+            '0', 
+            '600', 
+            '0', 
+            '600', 
+            str(total_duration), 
+            '0',
+            current_path
+            )
+        trackpng.append(clippng)
 
         tree = ElementTree(xmeml)
         fileName = current_path+"/inputvideo/xmlcache/"+ video_list[i].rstrip('.mp4')+".xml"

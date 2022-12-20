@@ -287,6 +287,125 @@ def audiotransitionitem(centerframe, duration):
     reverse.text='FALSE'
     effect.append(reverse)
     return transition
+def imageclipitem(image, timein, timeout, start, end, videoend, linknumber, current_path):
+    clipitem = Element('clipitem')
+    name = Element('name')
+    name.text= image
+    clipitem.append(name)
+    enabled = Element('enabled')
+    enabled.text= 'true'
+    clipitem.append(enabled)
+    rate = Element('rate')
+    clipitem.append(rate)
+    timebase = Element('timebase')
+    timebase.text= '30'
+    rate.append(timebase) 
+    ntsc = Element('ntsc')
+    ntsc.text= 'false'
+    rate.append(ntsc)
+    tin = Element('in')
+    tin.text= timein
+    clipitem.append(tin)
+    tout = Element('out')
+    tout.text= timeout
+    clipitem.append(tout)
+    st = Element('start')
+    st.text= start
+    clipitem.append(st)
+    en = Element('end')
+    en.text= end
+    clipitem.append(en)
+    file = Element('file')
+    file.attrib['id']= image
+    clipitem.append(file)
+
+    name = Element('name')
+    name.text= image
+    file.append(name)
+    pathurl = Element('pathurl')
+    pathurl.text= current_path+"\\"+r"pysrc\quest"+"\\"+image
+    file.append(pathurl)
+    media = Element('media')
+    file.append(media)
+    vi = Element('video')
+    media.append(vi)
+    samplecharacteristics = Element('samplecharacteristics')
+    vi.append(samplecharacteristics)
+    width = Element('width')
+    width.text= 'sj'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text= '1080'
+    samplecharacteristics.append(height)    
+    anamorphic = Element('anamorphic')
+    anamorphic.text= 'true'
+    samplecharacteristics.append(anamorphic)    
+    pixelaspectratio = Element('pixelaspectratio')
+    pixelaspectratio.text= 'square'
+    samplecharacteristics.append(pixelaspectratio)    
+    fielddominance = Element('fielddominance')
+    fielddominance.text= 'square'
+    samplecharacteristics.append(fielddominance)    
+
+    audio = Element('audio')
+    media.append(audio)
+    tin = Element('in')
+    tin.text='0'
+    audio.append(tin)
+    tout = Element('out')
+    tout.text=videoend
+    audio.append(tout)  
+    channelcount = Element('channelcount')
+    channelcount.text='2'
+    audio.append(channelcount)  
+    duration = Element('duration')
+    duration.text=videoend
+    audio.append(duration)  
+
+    link1 = Element('link')
+    clipitem.append(link1)
+    mediatype = Element('mediatype')
+    mediatype.text='video'
+    link1.append(mediatype)   
+    trackindex = Element('trackindex')
+    trackindex.text='1'
+    link1.append(trackindex)   
+    clipindex = Element('clipindex')
+    clipindex.text=linknumber
+    link1.append(clipindex)   
+
+    link2 = Element('link')
+    clipitem.append(link2)
+    mediatype = Element('mediatype')
+    mediatype.text='audio'
+    link2.append(mediatype)   
+    trackindex = Element('trackindex')
+    trackindex.text='1'
+    link2.append(trackindex)   
+    clipindex = Element('clipindex')
+    clipindex.text=linknumber
+    link2.append(clipindex)
+    groupindex = Element('groupindex')
+    groupindex.text=linknumber
+    link2.append(groupindex)
+
+    link3 = Element('link')
+    clipitem.append(link3)
+    mediatype = Element('mediatype')
+    mediatype.text='audio'
+    link3.append(mediatype)   
+    trackindex = Element('trackindex')
+    trackindex.text='2'
+    link3.append(trackindex)   
+    clipindex = Element('clipindex')
+    clipindex.text=linknumber
+    link3.append(clipindex)
+    groupindex = Element('groupindex')
+    groupindex.text=linknumber
+    link3.append(groupindex)
+
+    return clipitem
+
 def run_tree(
     current_path,
     video_list,

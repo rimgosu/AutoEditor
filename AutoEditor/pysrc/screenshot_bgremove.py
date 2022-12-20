@@ -13,8 +13,8 @@ def what_quest(video, target_time, output_path):
     # Set the target time for the screenshot
     time = target_time  # in seconds
 
-    x = [393, 780, 1169]
-    y = 190
+    x = [421-25, 808-25, 1195-25]
+    y = 219-25
     w, h = 350, 650
 
 

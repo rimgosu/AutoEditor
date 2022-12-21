@@ -1,0 +1,10 @@
+*.mp4
+*.xml
+*.wav
+<<<<<<< HEAD
+=======
+*.png
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
+*.jpg
+*.txt
+/AutoEditor/yolov5/runs/

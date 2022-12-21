@@ -1,0 +1,6 @@
+*.mp4
+*.xml
+*.wav
+*.jpg
+*.txt
+/yolov5/runs/

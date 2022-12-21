@@ -42,3 +42,5 @@ if __name__ == "__main__":
     video_list = [file for file in video_list if file.endswith(".mp4")]
     scr_path = current_path + "/yolov5/data/encodingimage/"
     scr_detect('encoding', current_path, scr_path, 'models/encoding.pt', 'runs/edetect')
+    
+ 

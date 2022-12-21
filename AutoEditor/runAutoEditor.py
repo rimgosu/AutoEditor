@@ -51,6 +51,7 @@ from pysrc.TREE import *
 from pysrc.edit import *
 from pysrc.upload import *
 from pysrc.audio_analysis import *
+from pysrc.screenshot_bgremove import *
 def framerate_resolution_change(inputvideo_path, outputvideo_path, framerate, res):
     if os.path.isfile(outputvideo_path):
         pass
@@ -146,10 +147,12 @@ def run_autoEditor(
 
 
     # 4. indexes
+    yolototal_index = [[0 for x in range(0)] for y in range(len(video_list))]
     employ_index = [[0 for x in range(0)] for y in range(len(video_list))]
     battle_index = [[0 for x in range(0)] for y in range(len(video_list))]
     EMOVE_INDEX = [[0 for x in range(0)] for y in range(len(video_list))]
     dminion_index = [[0 for x in range(0)] for y in range(len(video_list))]
+    bang_index = [[0 for x in range(0)] for y in range(len(video_list))]
 
     star_index = [[0 for x in range(0)] for y in range(len(video_list))]
     kelthuzad_index = [[0 for x in range(0)] for y in range(len(video_list))]
@@ -167,9 +170,25 @@ def run_autoEditor(
 
     reconnecting_index = [[0 for x in range(0)] for y in range(len(video_list))]
 
+    print("yolo_list")
     print(yolo_list)
 
     for i in range(len(video_list)):
+        for j in range(len(yolo_list[i])):
+            for k in range(len(yolo_list[i][j])):
+                if yolo_list[i][j][k][0] != '-' and yolo_list[i][j][k][0] != '2' \
+                    and yolo_list[i][j][k][0] != '3'and yolo_list[i][j][k][0] != '26':
+                    yolototal_index[i].append(j)
+                    yolototal_index[i].sort
+                elif yolo_list[i][j][k][0] == '2' and float(yolo_list[i][j][k][5]) > 0.79:
+                    # for emoticon
+                    if not 0.05 < float(yolo_list[i][j][k][3]) < 0.06 and 0.1 < float(yolo_list[i][j][k][4]) < 0.115:
+                        dminion_index[i].append(j)
+                        dminion_index[i].sort()
+                elif yolo_list[i][j][k][0] == '3' and float(yolo_list[i][j][k][5]) > 0.5:
+                    dminion_index[i].append(j)
+                    dminion_index[i].sort()
+
         for j in range(len(yolo_list[i])):
             for k in range(len(yolo_list[i][j])):
                 if yolo_list[i][j][k][0] == '0' and float(yolo_list[i][j][k][5]) > 0.75:
@@ -179,12 +198,10 @@ def run_autoEditor(
                     battle_index[i].append(j)
                     battle_index[i].sort()
 
-                if yolo_list[i][j][k][0] == '2' and float(yolo_list[i][j][k][5]) > 0.72:
+                if yolo_list[i][j][k][0] == '2' and float(yolo_list[i][j][k][5]) > 0.79:
                     if not 0.54 < float(yolo_list[i][j][k][2]) < 0.63:
                         EMOVE_INDEX[i].append(j)
                         EMOVE_INDEX[i].sort()
-                        dminion_index[i].append(j)
-                        dminion_index[i].sort()
 
                 if yolo_list[i][j][k][0] == '3'and float(yolo_list[i][j][k][5]) > 0.75:
                     EMOVE_INDEX[i].append(j)
@@ -242,8 +259,7 @@ def run_autoEditor(
                 if yolo_list[i][j][k][0] == '19':
                     EMOVE_INDEX[i].append(j)
                     EMOVE_INDEX[i].sort()
-                    EMOVE_INDEX[i].append(j)
-                    EMOVE_INDEX[i].sort()
+                    bang_index[i].append(j)
 
                 if yolo_list[i][j][k][0] == '21':
                     star_index[i].append(j)
@@ -286,12 +302,17 @@ def run_autoEditor(
                     reconnecting_index[i].append(j)
                     reconnecting_index[i].sort()         
 
+    print("yolototal_index")
+    print(yolototal_index)
+    print("dminion_index")
+    print(dminion_index)
+
+    print("bang_index")
+    print(bang_index)
 
     for i in range(len(video_list)):
         EMOVE_INDEX[i] = set(EMOVE_INDEX[i])
         EMOVE_INDEX[i] = list(EMOVE_INDEX[i])
-        dminion_index[i] = set(dminion_index[i])
-        dminion_index[i] = list(dminion_index[i])
 
     print(EMOVE_INDEX)
     print("gameend_index")
@@ -357,49 +378,8 @@ def run_autoEditor(
     print(gamestart)
     print(gameend)
 
-    # 5-2. EMPLOY INDEX PRETREATMENT
-    for i in range(len(video_list)):
-        EMOVE_INDEX[i].sort()
 
-
-
-
-
-
-    # 5-2. EMOVE INDEX EXPANSION
-    EXPANSION_CONSTANT = int(1.6 * framerate)
-    EXPANSION_MINUS_CONSTANT = int(2.1 * framerate)
-    
-    EMOVE_INDEX_EXPANSION = [[0 for x in range(0)] for y in range(len(video_list))]
-    EMOVE_INDEX_REVERSE = [[0 for x in range(0)] for y in range(len(video_list))]
-
-    for i in range(len(video_list)):
-        for j in EMOVE_INDEX[i]:
-            for k in range(-EXPANSION_MINUS_CONSTANT, EXPANSION_CONSTANT):
-                EMOVE_INDEX_EXPANSION[i].append(j+k)
-
-        EMOVE_INDEX_EXPANSION[i] = set(EMOVE_INDEX_EXPANSION[i])
-        EMOVE_INDEX_EXPANSION[i] = list(EMOVE_INDEX_EXPANSION[i])
-        EMOVE_INDEX_EXPANSION[i].sort()
-
-        print(EMOVE_INDEX_EXPANSION[i])
-
-        while min(EMOVE_INDEX_EXPANSION[i]) < 0 :
-            del EMOVE_INDEX_EXPANSION[i][0]
-        while max(EMOVE_INDEX_EXPANSION[i]) > frameend[i]: 
-            EMOVE_INDEX_EXPANSION[i].pop()
-
-        for j in range(frameend[i]):
-            if j in EMOVE_INDEX_EXPANSION[i]:
-                pass
-            else:
-                EMOVE_INDEX_REVERSE[i].append(j)
-
-
-    print("EMOVE_INDEX_REVERSE")
-    print(EMOVE_INDEX_REVERSE)
-
-    # 5-3. battle to employ
+    # 5-2-1. battle to employ
     print(employ_index)
     print(battle_index)
 
@@ -466,8 +446,11 @@ def run_autoEditor(
                 for k in reconnecting_index[i]:
                     if j == k:
                         fix_house_index[i].append(k)
-            ES_index[i].append(max(fix_house_index[i]))
-            ES_index[i].sort()
+            print("fix_house_index")
+            print(fix_house_index[i])
+            print(max(fix_house_index[i]))
+            BS_index[i].append(max(fix_house_index[i]))
+            BS_index[i].sort()
         
 
     print("ES, BS indexes")
@@ -480,10 +463,7 @@ def run_autoEditor(
     print("reconnecting_index")
     print(reconnecting_index)
 
-        
-
-
-    # 5-3-1. battles
+    # 5-2-2. battles
     battle_to_atk_constant = framerate * 4
     battles = [[0 for i in range(0)] for i in range(len(video_list))]
 
@@ -492,13 +472,44 @@ def run_autoEditor(
             for k in range(BS_index[i][j] + battle_to_atk_constant, ES_index[i][j+1]):
                 battles[i].append(k)
 
-    
-
     print("battles")
     print(battles)
-                
+
+    # 5-3-2. EMOVE INDEX EXPANSION
+    EXPANSION_CONSTANT = int(1.6 * framerate)
+    EXPANSION_MINUS_CONSTANT = int(2.1 * framerate)
+    
+    EMOVE_INDEX_EXPANSION = [[0 for x in range(0)] for y in range(len(video_list))]
+    EMOVE_INDEX_REVERSE = [[0 for x in range(0)] for y in range(len(video_list))]
+
+    for i in range(len(video_list)):
+        for j in EMOVE_INDEX[i]:
+            for k in range(-EXPANSION_MINUS_CONSTANT, EXPANSION_CONSTANT):
+                EMOVE_INDEX_EXPANSION[i].append(j+k)
+
+        EMOVE_INDEX_EXPANSION[i] = set(EMOVE_INDEX_EXPANSION[i])
+        EMOVE_INDEX_EXPANSION[i] = list(EMOVE_INDEX_EXPANSION[i])
+        EMOVE_INDEX_EXPANSION[i].sort()
+
+        print(EMOVE_INDEX_EXPANSION[i])
+
+        while min(EMOVE_INDEX_EXPANSION[i]) < 0 :
+            del EMOVE_INDEX_EXPANSION[i][0]
+        while max(EMOVE_INDEX_EXPANSION[i]) > frameend[i]: 
+            EMOVE_INDEX_EXPANSION[i].pop()
+
+        for j in range(frameend[i]):
+            if j in EMOVE_INDEX_EXPANSION[i]:
+                pass
+            else:
+                EMOVE_INDEX_REVERSE[i].append(j)
+
+
+    print("EMOVE_INDEX_REVERSE")
+    print(EMOVE_INDEX_REVERSE)
 
     # 5-4. star index
+    STAR_MINUS_THRESHOLD = int(framerate * 0.5)
     star_constant = framerate * 5
     for i in range(len(video_list)):
         star_index[i] = set(star_index[i])
@@ -516,6 +527,19 @@ def run_autoEditor(
     print("star_index")
     print(star_index)
 
+    # 5-4-2. 
+    star_minustar_index = [[0 for x in range(0)] for y in range(len(video_list))]
+    for i in range(len(video_list)):
+        star_house_index = [[0 for x in range(0)] for y in range(len(BS_index[i]))]
+        for j in range(len(BS_index[i])):
+            for k in range(BS_index[i][j], ES_index[i][j+1]):
+                for l in star_index[i]:
+                    if l == k:
+                        star_house_index[j].append(k)
+        for j in range(len(star_house_index)):
+            if len(star_house_index[j]) != 0:
+                for k in range(min(star_house_index[j]), max(star_house_index[j]) - STAR_MINUS_THRESHOLD):
+                    star_minustar_index[i].append(k)
 
     # 5-5. SUMGIGI PYOSI
     BALGYUN_THRESHOLD = int(framerate * 10)
@@ -536,6 +560,10 @@ def run_autoEditor(
         for j in pyosi_index[i]:
             SUMPYO_index[i].append(j)
             SUMPYO_index[i].sort()
+        
+        SUMPYO_index[i] = set(SUMPYO_index[i])
+        SUMPYO_index[i] = list(SUMPYO_index[i])
+        SUMPYO_index[i].sort()
 
         print("SUMPYO_index")
         print(SUMPYO_index)
@@ -557,10 +585,19 @@ def run_autoEditor(
                             print(l, "fuck") 
                             SUMPYO_SEadj_index[i].append(SUMPYO_SE_index[i][j])
                             SUMPYO_SEadj_index[i].append(SUMPYO_SE_index[i][j+1])
+
+        print(SUMPYO_SE_index)
+        SUMPYO_SE_index_dup = [x for j, x in enumerate(SUMPYO_SE_index[i]) if j != SUMPYO_SE_index[i].index(x)]
+
         for j in SUMPYO_SEadj_index[i]:
-            while j in SUMPYO_SE_index[i]:
-                SUMPYO_SE_index[i].remove(j)
-                print(str(j) +"fuck_removed")
+            if j not in SUMPYO_SE_index_dup:
+                while j in SUMPYO_SE_index[i]:
+                    SUMPYO_SE_index[i].remove(j)
+                    print(str(j) +"fuck_removed")
+            else:
+                if j in SUMPYO_SE_index[i]:
+                    SUMPYO_SE_index[i].remove(j)
+                    print(str(j) +"fuck_removed")
 
         for j in range(len(SUMPYO_SE_index[i])):
             if j % 2 == 0:
@@ -582,7 +619,21 @@ def run_autoEditor(
         print("pyosi_house_index")
         print(pyosi_house_index)
 
+<<<<<<< HEAD
+=======
+        # balgyun total house index
+        balgyun_house_index = [[0 for x in range(0)] for y in range(len(balgyun_start[i]))]
+        for j in range(len(balgyun_start[i])):
+            for k in range(balgyun_start[i][j], balgyun_end[i][j]):
+                for l in SUMPYO_index[i]:
+                    if l == k:
+                        balgyun_house_index[j].append(k)
         
+        print("balgyun_house_index")
+        print(balgyun_house_index)
+
+        
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
         for j in range(len(pyosi_house_index)):
             if len(pyosi_house_index[j]) > framerate:
                 for k in range(min(pyosi_house_index[j])+ PYOSI_THRESHOLD, max(pyosi_house_index[j]) - PYOSI_THRESHOLD):
@@ -610,7 +661,7 @@ def run_autoEditor(
             SCENE_INDEX[i] = list(SCENE_INDEX[i])
             SCENE_INDEX[i].sort()
 
-        for j in star_index[i]:
+        for j in star_minustar_index[i]:
             while j in SCENE_INDEX[i]:
                 SCENE_INDEX[i].remove(j)
                 print(str(j) +"STARremoved")
@@ -635,9 +686,81 @@ def run_autoEditor(
             SCENE_INDEX[i] = list(SCENE_INDEX[i])
             SCENE_INDEX[i].sort()
 
-    # 6-3-0. keltuzhad
+    # 6-??-1. dminion fuck nothing
+    YOLOTOTAL_EXPANSION_THRESHOLD = int(1.5 * framerate)
+    for i in range(len(video_list)):
+        dminion_dup = [x for y, x in enumerate(dminion_index[i]) if y != dminion_index[i].index(x)]
+        for j in dminion_dup:
+            while j in dminion_index[i]:
+                dminion_index[i].remove(j)
+                print(str(j) +"_dminion dup removed")        
+        print("dminion_index dup removed")
+        print(dminion_index)    
+
+        for j in range(len(yolototal_index[i])):
+            for k in range(yolototal_index[i][j]-YOLOTOTAL_EXPANSION_THRESHOLD, yolototal_index[i][j]+YOLOTOTAL_EXPANSION_THRESHOLD):
+                yolototal_index[i].append(k)
+        yolototal_index[i] = set(yolototal_index[i])
+        yolototal_index[i] = list(yolototal_index[i])
+        yolototal_index[i].sort()
+
+        for j in yolototal_index[i]:
+            while j in dminion_index[i]:
+                dminion_index[i].remove(j)
+                print(str(j) +"_dminion yolototal removed")      
+        print("dminion_index yolototal removed")
+        print(dminion_index)  
+
+        for j in range(len(BS_index[i])):
+            for k in range(BS_index[i][j], ES_index[i][j+1]):
+                if k in dminion_index[i]:
+                    dminion_index[i].remove(k)
+                    print(str(k) + "_dminion with battles removed")
+        dminion_index[i].sort()
+        dminion_dup2 = [x for y, x in enumerate(dminion_index[i]) if y != dminion_index[i].index(x)]
+        for j in dminion_dup2:
+            while j in dminion_index[i]:
+                dminion_index[i].remove(j)
+                print(str(j) +"_dminion dup removed")      
+        print("dminion_index pretreated done")
+        print(dminion_index)  
+
+    # 6-??-2. remove sequential dminion
+    emove_but_nothing_index = [[0 for x in range(0)] for y in range(len(video_list))]
+    NOTHING_THRESHOLD = int(framerate * 0.67)
+    for i in range(len(video_list)):
+        for j in range(len(dminion_index[i])-1):
+            if dminion_index[i][j+1] - dminion_index[i][j] == 1:
+                emove_but_nothing_index[i].append(dminion_index[i][j])
+                emove_but_nothing_index[i].append(dminion_index[i][j+1])
+        emove_but_nothing_index[i] = set(emove_but_nothing_index[i])
+        emove_but_nothing_index[i] = list(emove_but_nothing_index[i])
+        emove_but_nothing_index[i].sort()
+
+        if len(emove_but_nothing_index[i]) > int(framerate * 0.5):
+            but_nothing_start_index = []
+            but_nothing_start_index.append(emove_but_nothing_index[i][0])
+            for j in range(len(emove_but_nothing_index[i]) - 1):
+                if emove_but_nothing_index[i][j+1] - emove_but_nothing_index[i][j] != 1:
+                    but_nothing_start_index.append(emove_but_nothing_index[i][j])
+                    but_nothing_start_index.append(emove_but_nothing_index[i][j+1])
+            but_nothing_start_index.append(emove_but_nothing_index[i][len(emove_but_nothing_index[i])-1])
+
+            for j in range(len(but_nothing_start_index)):
+                if j % 2 == 0:
+                    for k in range(but_nothing_start_index[j] + NOTHING_THRESHOLD, but_nothing_start_index[j+1] - NOTHING_THRESHOLD):
+                        while k in SCENE_INDEX[i]:
+                            SCENE_INDEX[i].remove(k)
+                            print(str(k) + "_nothing is removed")
+            
+            print("emove_but_nothing_index")
+            print(emove_but_nothing_index)
+            print("but_nothing_start_index")
+            print(but_nothing_start_index)
+
+    # 6-3-0. keltuzhad 
     kelthuzad_remove_index = [[0 for x in range(0)] for y in range(len(video_list))]
-    STAR_MINUS_THRESHOLD = int(framerate * 0.5)
+    BS_TURNOVER_THRESHOLD = int(framerate * 1.5)
     EALRY_POINT_THRESHOLD = int(framerate * 5)
     for i in range(len(video_list)):
         kelthuzad_house_index = [[0 for x in range(0)] for y in range(len(BS_index[i]))]
@@ -651,22 +774,20 @@ def run_autoEditor(
         print(kelthuzad_house_index)
         star_house_index = [[0 for x in range(0)] for y in range(len(BS_index[i]))]
         for j in range(len(BS_index[i])):
-            for k in range(BS_index[i][j], ES_index[i][j+1]):
+            for k in range(BS_index[i][j] + BS_TURNOVER_THRESHOLD, ES_index[i][j+1]):
                 for l in star_index[i]:
                     if l == k:
                         star_house_index[j].append(k)
 
         for j in range(len(kelthuzad_house_index)):
             if len(kelthuzad_house_index[j]) > 5 * framerate:
-                for k in range(BS_index[i][j], max(star_house_index[j]) - STAR_MINUS_THRESHOLD):
+                for k in range(BS_index[i][j]+ BS_TURNOVER_THRESHOLD, max(star_house_index[j]) - STAR_MINUS_THRESHOLD):
                     kelthuzad_remove_index[i].append(k)
 
         for j in kelthuzad_remove_index[i]:
             while j in SCENE_INDEX[i]:
                 SCENE_INDEX[i].remove(j)
                 print(str(j) +"_kelthuzad_removed")
-        
-
 
     """
     employ: 1턴 / 2턴 삭제
@@ -762,9 +883,88 @@ def run_autoEditor(
                 SCENE_INDEX[i].remove(j)
                 print(j, 'gameendtoframeend_removed')
 
+    # 7-1. quest recognize
+<<<<<<< HEAD
+    quest_select_frame = []
+    for i in range(len(video_list)):
+        balgyun_house_index = [[0 for x in range(0)] for y in range(len(balgyun_start[i]))]
+        for j in range(len(balgyun_start[i])):
+            for k in range(balgyun_start[i][j], balgyun_end[i][j]):
+                for l in SUMPYO_index[i]:
+                    if l == k:
+                        balgyun_house_index[j].append(k)
 
+        print('balgyun_house_index')
+        print(balgyun_house_index)
+        
+        breaker = False
+        for j in range(len(balgyun_house_index)):
+            for k in range(len(balgyun_house_index[j])):
+                if ES_index[i][3] < min(balgyun_house_index[j]) < BS_index[i][3] \
+                    and ES_index[i][3] < max(balgyun_house_index[j]) < BS_index[i][3]:
+                    quest_select = (max(balgyun_house_index[j]) + framerate*1/3 ) / framerate
+                    print(quest_select)
+                    breaker = True
+                    break
+            if breaker == True:
+                break
 
-    # 7. total index
+        quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+        detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+        print('quest_label')
+        print(quest_label)
+        while len(quest_label) != 1:
+            quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+            detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+            quest_select += framerate * 1/9
+            print("quest_select")
+            print(quest_select)
+            print('quest_label')
+            print(quest_label)
+            
+        for j in range(3):
+            if os.path.exists(current_path + '/yolov5/runs/qdetect/exp/labels/large_quest' + str(j) + '.txt'):
+                quest_image = current_path + '/pysrc/quest/quest' + str(j) + '_bgremoved.png'
+                quest_copy_image = current_path + '/pysrc/image_src/' + video_list[i].rstrip('.mp4') + '_quest_bgremoved.png'
+                shutil.copy(quest_image, quest_copy_image)
+                break
+        
+        quest_select_frame.append(quest_select * 60)
+
+    print("quest_select_frame")
+    print(quest_select_frame)
+
+=======
+    print("balgyun_house_index")
+    print(balgyun_house_index)
+    for i in range(len(video_list)):
+        for j in range(len(balgyun_house_index)):
+            for k in range(len(balgyun_house_index[j])):
+                if ES_index[i][3] < min(balgyun_house_index[j]) < BS_index[i][3] \
+                    and ES_index[i][3] < max(balgyun_house_index[j]) < BS_index[i][3]:
+                    quest_select = (max(balgyun_house_index[j]) + framerate*1/3 ) / framerate
+                    print(quest_select)
+                    break
+        quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+        detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+        print('quest_label')
+        print(quest_label)
+        while len(quest_label) != 1:
+            quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+            detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+            quest_select += framerate * 1/9
+            print("quest_select")
+            print(quest_select)
+            print('quest_label')
+            print(quest_label)
+            
+        for j in range(3):
+            if os.path.exists(current_path + '/yolov5/runs/qdetect/exp/labels/large_quest' + str(i) + '.txt'):
+                quest_image = current_path + '/pysrc/quest/quest' + str(i) + 'bgremoved.png'
+                break
+
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
+    # 8-1. total index
     total_index = [[0 for x in range(0)] for y in range(len(video_list))]
     for i in range(len(video_list)):
         total_index[i].append(SCENE_INDEX[i][0])
@@ -776,7 +976,7 @@ def run_autoEditor(
 
     print(total_index)
 
-    # 8. start, end index
+    # 8-2. start, end index
     start_index = [[0 for x in range(0)] for y in range(len(video_list))]
     end_index = [[0 for x in range(0)] for y in range(len(video_list))]
     for i in range(len(video_list)):
@@ -850,28 +1050,47 @@ def run_autoEditor(
     # 9-1. frame to second
     start_index_second = [[0 for x in range(0)] for y in range(len(video_list))]
     end_index_second = [[0 for x in range(0)] for y in range(len(video_list))]
-    for i in range(len(video_list)):
-        start_index_second[i] = frame_to_second(adjusted_start_index2[i], framerate)
-        end_index_second[i] = frame_to_second(adjusted_end_index2[i], framerate)
-
-    # 10. export xml
     start_index_frame = [[0 for x in range(0)] for y in range(len(video_list))]
     end_index_frame = [[0 for x in range(0)] for y in range(len(video_list))]
     rateframe = framerate / 60
     for i in range(len(video_list)):
+        start_index_second[i] = frame_to_second(adjusted_start_index2[i], framerate)
+        end_index_second[i] = frame_to_second(adjusted_end_index2[i], framerate)
         start_index_frame[i] = frame_to_second(adjusted_start_index2[i], rateframe)
         end_index_frame[i] = frame_to_second(adjusted_end_index2[i], rateframe)
+        print(start_index_frame)
+        print(end_index_frame)
 
-    print(start_index_frame)
-    print(end_index_frame)
+    # 10-0. quest frame in
+    quest_start_frame = []
+    for i in range(len(video_list)):
+        qduration = 0
+        for j in range(len(start_index_frame[i])-1):
+            if start_index_frame[i][j] < quest_select_frame[i] < end_index_frame[i][j]:
+                quest_start_frame.append(qduration + quest_select_frame[i] - start_index_frame[i][j])
+                break
+            elif end_index_frame[i][j] < quest_select_frame[i] < start_index_frame[i][j+1]:
+                quest_start_frame.append(qduration + quest_select_frame[i] - end_index_frame[i][j])
+                break
+            qduration += end_index_frame[i][j] - start_index_frame[i][j]
+            print(qduration)
+            print(start_index_frame[i][j])
+            print(end_index_frame[i][j])
+            print(quest_select_frame[i])
 
-    if changeXml:
-        run_tree(current_path, video_list, 60, start_index_frame, end_index_frame)
+
+    print('quest_start_frame')
+    print(quest_start_frame)
+
+    # 10. export xml
+
+    for i in range(len(video_list)):
+        if changeXml:
+            run_tree(current_path, video_list, 60, start_index_frame, end_index_frame, quest_start_frame[i], quest_start_frame[i] + 7200)
 
     # 11. xml to encoding
     if Premiere:
-        run_autoPremiere(current_path, video_list, ex)
-
+        run_autoPremiere(current_path, video_list, exf)
 
     # 12. upload youtube
     if uploadYotube:
@@ -883,18 +1102,18 @@ if __name__=="__main__":
     video_list = os.listdir(current_path + "/inputvideo/")
     video_list = [file for file in video_list if file.endswith(".mp4")]
     print(video_list)
-    ex = os.path.join(current_path, 'inputvideo')
-    ex = os.path.join(ex, 'export')
+    exf = os.path.join(current_path, 'inputvideo')
+    exf = os.path.join(exf, 'export')
     run_autoEditor(    
         current_path,
         video_list,
-        ex,
+        exf,
         framerate=3,
         res=1/3,
-        FRchange=False,
+        FRchange=False ,
         yoloDetect=False,
         changeXml=True,
-        Premiere=False,
+        Premiere=True,
         uploadYotube=False
     )
     

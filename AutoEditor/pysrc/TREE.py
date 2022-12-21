@@ -287,7 +287,11 @@ def audiotransitionitem(centerframe, duration):
     reverse.text='FALSE'
     effect.append(reverse)
     return transition
+<<<<<<< HEAD
 def questclipitem(image,video, timein, timeout, start, end,current_path):
+=======
+def imageclipitem(image, timein, timeout, start, end, videoend, linknumber, current_path):
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
     clipitem = Element('clipitem')
     name = Element('name')
     name.text= image
@@ -295,24 +299,34 @@ def questclipitem(image,video, timein, timeout, start, end,current_path):
     enabled = Element('enabled')
     enabled.text= 'true'
     clipitem.append(enabled)
+<<<<<<< HEAD
     questduration = Element('duration')
     questduration.text='36000'
     clipitem.append(questduration)
+=======
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
     rate = Element('rate')
     clipitem.append(rate)
     timebase = Element('timebase')
     timebase.text= '30'
     rate.append(timebase) 
     ntsc = Element('ntsc')
+<<<<<<< HEAD
     ntsc.text= 'true'
+=======
+    ntsc.text= 'false'
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
     rate.append(ntsc)
     tin = Element('in')
     tin.text= timein
     clipitem.append(tin)
     tout = Element('out')
+<<<<<<< HEAD
     alphatype = Element('alphatype')
     alphatype.text= 'straight'
     clipitem.append(alphatype)
+=======
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
     tout.text= timeout
     clipitem.append(tout)
     st = Element('start')
@@ -329,7 +343,11 @@ def questclipitem(image,video, timein, timeout, start, end,current_path):
     name.text= image
     file.append(name)
     pathurl = Element('pathurl')
+<<<<<<< HEAD
     pathurl.text= current_path+"\\"+r"pysrc\image_src"+"\\"+video.rstrip('.mp4')+'_quest_bgremoved.png'
+=======
+    pathurl.text= current_path+"\\"+r"pysrc\quest"+"\\"+image
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
     file.append(pathurl)
     media = Element('media')
     file.append(media)
@@ -338,6 +356,7 @@ def questclipitem(image,video, timein, timeout, start, end,current_path):
     samplecharacteristics = Element('samplecharacteristics')
     vi.append(samplecharacteristics)
     width = Element('width')
+<<<<<<< HEAD
     width.text= '450'
     samplecharacteristics.append(width)
     height = Element('height')
@@ -345,11 +364,21 @@ def questclipitem(image,video, timein, timeout, start, end,current_path):
     samplecharacteristics.append(height)    
     anamorphic = Element('anamorphic')
     anamorphic.text= 'false'
+=======
+    width.text= 'sj'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text= '1080'
+    samplecharacteristics.append(height)    
+    anamorphic = Element('anamorphic')
+    anamorphic.text= 'true'
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
     samplecharacteristics.append(anamorphic)    
     pixelaspectratio = Element('pixelaspectratio')
     pixelaspectratio.text= 'square'
     samplecharacteristics.append(pixelaspectratio)    
     fielddominance = Element('fielddominance')
+<<<<<<< HEAD
     fielddominance.text= 'none'
     samplecharacteristics.append(fielddominance)    
 
@@ -499,6 +528,67 @@ def scrollclipitem(image,video, timein, timeout, start, end,current_path):
     vert = Element('vert')
     vert.text= '0'
     value.append(vert)   
+=======
+    fielddominance.text= 'square'
+    samplecharacteristics.append(fielddominance)    
+
+    audio = Element('audio')
+    media.append(audio)
+    tin = Element('in')
+    tin.text='0'
+    audio.append(tin)
+    tout = Element('out')
+    tout.text=videoend
+    audio.append(tout)  
+    channelcount = Element('channelcount')
+    channelcount.text='2'
+    audio.append(channelcount)  
+    duration = Element('duration')
+    duration.text=videoend
+    audio.append(duration)  
+
+    link1 = Element('link')
+    clipitem.append(link1)
+    mediatype = Element('mediatype')
+    mediatype.text='video'
+    link1.append(mediatype)   
+    trackindex = Element('trackindex')
+    trackindex.text='1'
+    link1.append(trackindex)   
+    clipindex = Element('clipindex')
+    clipindex.text=linknumber
+    link1.append(clipindex)   
+
+    link2 = Element('link')
+    clipitem.append(link2)
+    mediatype = Element('mediatype')
+    mediatype.text='audio'
+    link2.append(mediatype)   
+    trackindex = Element('trackindex')
+    trackindex.text='1'
+    link2.append(trackindex)   
+    clipindex = Element('clipindex')
+    clipindex.text=linknumber
+    link2.append(clipindex)
+    groupindex = Element('groupindex')
+    groupindex.text=linknumber
+    link2.append(groupindex)
+
+    link3 = Element('link')
+    clipitem.append(link3)
+    mediatype = Element('mediatype')
+    mediatype.text='audio'
+    link3.append(mediatype)   
+    trackindex = Element('trackindex')
+    trackindex.text='2'
+    link3.append(trackindex)   
+    clipindex = Element('clipindex')
+    clipindex.text=linknumber
+    link3.append(clipindex)
+    groupindex = Element('groupindex')
+    groupindex.text=linknumber
+    link3.append(groupindex)
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
 
     return clipitem
 
@@ -568,11 +658,16 @@ def run_tree(
 
         track1 = Element('track')
         video.append(track1)
+<<<<<<< HEAD
         trackscroll = Element('track')
         video.append(trackscroll)
         trackquest = Element('track')
         video.append(trackquest)
 
+=======
+        trackpng = Element('track')
+        video.append(trackpng)
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
 
         audio = Element('audio')
         media.append(audio)
@@ -634,6 +729,7 @@ def run_tree(
                 start = end
                 end = start + end_index_frame[i][j+1] - start_index_frame[i][j+1]
 
+<<<<<<< HEAD
         clipscroll = scrollclipitem(
             'scroll.png',
             video_list[i], 
@@ -656,6 +752,19 @@ def run_tree(
         trackquest.append(clipquest)
 
 
+=======
+        clippng = videoclipitem(
+            video_list[i], 
+            '0', 
+            '600', 
+            '0', 
+            '600', 
+            str(total_duration), 
+            '0',
+            current_path
+            )
+        trackpng.append(clippng)
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
 
         tree = ElementTree(xmeml)
         fileName = current_path+"/inputvideo/xmlcache/"+ video_list[i].rstrip('.mp4')+".xml"

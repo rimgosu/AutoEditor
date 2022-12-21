@@ -619,6 +619,21 @@ def run_autoEditor(
         print("pyosi_house_index")
         print(pyosi_house_index)
 
+<<<<<<< HEAD
+=======
+        # balgyun total house index
+        balgyun_house_index = [[0 for x in range(0)] for y in range(len(balgyun_start[i]))]
+        for j in range(len(balgyun_start[i])):
+            for k in range(balgyun_start[i][j], balgyun_end[i][j]):
+                for l in SUMPYO_index[i]:
+                    if l == k:
+                        balgyun_house_index[j].append(k)
+        
+        print("balgyun_house_index")
+        print(balgyun_house_index)
+
+        
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
         for j in range(len(pyosi_house_index)):
             if len(pyosi_house_index[j]) > framerate:
                 for k in range(min(pyosi_house_index[j])+ PYOSI_THRESHOLD, max(pyosi_house_index[j]) - PYOSI_THRESHOLD):
@@ -869,6 +884,7 @@ def run_autoEditor(
                 print(j, 'gameendtoframeend_removed')
 
     # 7-1. quest recognize
+<<<<<<< HEAD
     quest_select_frame = []
     for i in range(len(video_list)):
         balgyun_house_index = [[0 for x in range(0)] for y in range(len(balgyun_start[i]))]
@@ -918,6 +934,36 @@ def run_autoEditor(
     print("quest_select_frame")
     print(quest_select_frame)
 
+=======
+    print("balgyun_house_index")
+    print(balgyun_house_index)
+    for i in range(len(video_list)):
+        for j in range(len(balgyun_house_index)):
+            for k in range(len(balgyun_house_index[j])):
+                if ES_index[i][3] < min(balgyun_house_index[j]) < BS_index[i][3] \
+                    and ES_index[i][3] < max(balgyun_house_index[j]) < BS_index[i][3]:
+                    quest_select = (max(balgyun_house_index[j]) + framerate*1/3 ) / framerate
+                    print(quest_select)
+                    break
+        quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+        detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+        print('quest_label')
+        print(quest_label)
+        while len(quest_label) != 1:
+            quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
+            detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/')
+            quest_select += framerate * 1/9
+            print("quest_select")
+            print(quest_select)
+            print('quest_label')
+            print(quest_label)
+            
+        for j in range(3):
+            if os.path.exists(current_path + '/yolov5/runs/qdetect/exp/labels/large_quest' + str(i) + '.txt'):
+                quest_image = current_path + '/pysrc/quest/quest' + str(i) + 'bgremoved.png'
+                break
+
+>>>>>>> a446ecda99c93a83106a920dc763fceaf899d288
     # 8-1. total index
     total_index = [[0 for x in range(0)] for y in range(len(video_list))]
     for i in range(len(video_list)):

@@ -287,12 +287,229 @@ def audiotransitionitem(centerframe, duration):
     reverse.text='FALSE'
     effect.append(reverse)
     return transition
+def questclipitem(image,video, timein, timeout, start, end,current_path):
+    clipitem = Element('clipitem')
+    name = Element('name')
+    name.text= image
+    clipitem.append(name)
+    enabled = Element('enabled')
+    enabled.text= 'true'
+    clipitem.append(enabled)
+    questduration = Element('duration')
+    questduration.text='36000'
+    clipitem.append(questduration)
+    rate = Element('rate')
+    clipitem.append(rate)
+    timebase = Element('timebase')
+    timebase.text= '30'
+    rate.append(timebase) 
+    ntsc = Element('ntsc')
+    ntsc.text= 'true'
+    rate.append(ntsc)
+    tin = Element('in')
+    tin.text= timein
+    clipitem.append(tin)
+    tout = Element('out')
+    alphatype = Element('alphatype')
+    alphatype.text= 'straight'
+    clipitem.append(alphatype)
+    tout.text= timeout
+    clipitem.append(tout)
+    st = Element('start')
+    st.text= start
+    clipitem.append(st)
+    en = Element('end')
+    en.text= end
+    clipitem.append(en)
+    file = Element('file')
+    file.attrib['id']= image
+    clipitem.append(file)
+
+    name = Element('name')
+    name.text= image
+    file.append(name)
+    pathurl = Element('pathurl')
+    pathurl.text= current_path+"\\"+r"pysrc\image_src"+"\\"+video.rstrip('.mp4')+'_quest_bgremoved.png'
+    file.append(pathurl)
+    media = Element('media')
+    file.append(media)
+    vi = Element('video')
+    media.append(vi)
+    samplecharacteristics = Element('samplecharacteristics')
+    vi.append(samplecharacteristics)
+    width = Element('width')
+    width.text= '450'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text= '800'
+    samplecharacteristics.append(height)    
+    anamorphic = Element('anamorphic')
+    anamorphic.text= 'false'
+    samplecharacteristics.append(anamorphic)    
+    pixelaspectratio = Element('pixelaspectratio')
+    pixelaspectratio.text= 'square'
+    samplecharacteristics.append(pixelaspectratio)    
+    fielddominance = Element('fielddominance')
+    fielddominance.text= 'none'
+    samplecharacteristics.append(fielddominance)    
+
+    filter = Element('filter')
+    clipitem.append(filter)
+    effect = Element('effect')
+    filter.append(effect)
+    filtername = Element('name')
+    filtername.text= 'Basic Motion'
+    effect.append(filtername)    
+    effectid = Element('effectid')
+    effectid.text= 'basic'
+    effect.append(effectid)    
+    effectcategory = Element('effectcategory')
+    effectcategory.text= 'motion'
+    effect.append(effectcategory)    
+    effecttype = Element('effecttype')
+    effecttype.text= 'motion'
+    effect.append(effecttype)    
+    mediatype = Element('mediatype')
+    mediatype.text= 'video'
+    effect.append(mediatype)    
+    pproBypass = Element('pproBypass')
+    pproBypass.text= 'false'
+    effect.append(pproBypass)    
+    parameter = Element('parameter')
+    parameter.attrib['authoringApp']= "PremierePro"
+    effect.append(parameter)
+    parameterid = Element('parameterid')
+    parameterid.text= 'center'
+    parameter.append(parameterid)    
+    parametername = Element('name')
+    parametername.text= 'Center'
+    parameter.append(parametername)    
+    value = Element('value')
+    parameter.append(value)    
+    horiz = Element('horiz')
+    horiz.text= '1.47817'
+    value.append(horiz)   
+    vert = Element('vert')
+    vert.text= '0.037'
+    value.append(vert)   
+    
+    return clipitem
+def scrollclipitem(image,video, timein, timeout, start, end,current_path):
+    clipitem = Element('clipitem')
+    name = Element('name')
+    name.text= image
+    clipitem.append(name)
+    enabled = Element('enabled')
+    enabled.text= 'true'
+    scrollduration = Element('duration')
+    scrollduration.text='36000'
+    clipitem.append(scrollduration)
+    clipitem.append(enabled)
+    rate = Element('rate')
+    clipitem.append(rate)
+    timebase = Element('timebase')
+    timebase.text= '30'
+    rate.append(timebase) 
+    ntsc = Element('ntsc')
+    ntsc.text= 'true'
+    rate.append(ntsc)
+    tin = Element('in')
+    tin.text= timein
+    clipitem.append(tin)
+    tout = Element('out')
+    tout.text= timeout
+    clipitem.append(tout)
+    st = Element('start')
+    st.text= start
+    clipitem.append(st)
+    en = Element('end')
+    en.text= end
+    clipitem.append(en)
+    alphatype = Element('alphatype')
+    alphatype.text= 'straight'
+    clipitem.append(alphatype)
+    file = Element('file')
+    file.attrib['id']= image
+    clipitem.append(file)
+
+    name = Element('name')
+    name.text= image
+    file.append(name)
+    pathurl = Element('pathurl')
+    pathurl.text= current_path+"\\"+r"pysrc\image_src"+"\\"+'scroll.png'
+    file.append(pathurl)
+    media = Element('media')
+    file.append(media)
+    vi = Element('video')
+    media.append(vi)
+    samplecharacteristics = Element('samplecharacteristics')
+    vi.append(samplecharacteristics)
+    width = Element('width')
+    width.text= '450'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text= '800'
+    samplecharacteristics.append(height)    
+    anamorphic = Element('anamorphic')
+    anamorphic.text= 'false'
+    samplecharacteristics.append(anamorphic)    
+    pixelaspectratio = Element('pixelaspectratio')
+    pixelaspectratio.text= 'square'
+    samplecharacteristics.append(pixelaspectratio)    
+    fielddominance = Element('fielddominance')
+    fielddominance.text= 'none'
+    samplecharacteristics.append(fielddominance)    
+
+    filter = Element('filter')
+    clipitem.append(filter)
+    effect = Element('effect')
+    filter.append(effect)
+    filtername = Element('name')
+    filtername.text= 'Basic Motion'
+    effect.append(filtername)    
+    effectid = Element('effectid')
+    effectid.text= 'basic'
+    effect.append(effectid)    
+    effectcategory = Element('effectcategory')
+    effectcategory.text= 'motion'
+    effect.append(effectcategory)    
+    effecttype = Element('effecttype')
+    effecttype.text= 'motion'
+    effect.append(effecttype)    
+    mediatype = Element('mediatype')
+    mediatype.text= 'video'
+    effect.append(mediatype)    
+    pproBypass = Element('pproBypass')
+    pproBypass.text= 'false'
+    effect.append(pproBypass)    
+    parameter = Element('parameter')
+    parameter.attrib['authoringApp']= "PremierePro"
+    effect.append(parameter)
+    parameterid = Element('parameterid')
+    parameterid.text= 'center'
+    parameter.append(parameterid)    
+    parametername = Element('name')
+    parametername.text= 'Center'
+    parameter.append(parametername)    
+    value = Element('value')
+    parameter.append(value)    
+    horiz = Element('horiz')
+    horiz.text= '1.47817'
+    value.append(horiz)   
+    vert = Element('vert')
+    vert.text= '0'
+    value.append(vert)   
+
+    return clipitem
+
 def run_tree(
     current_path,
     video_list,
     fr,
     start_index_frame,
-    end_index_frame
+    end_index_frame,
+    quest_start,
+    quest_end
     ):
     for i in range(len(video_list)):
         videopy = VideoFileClip(current_path + "/inputvideo/" + video_list[i])
@@ -351,6 +568,11 @@ def run_tree(
 
         track1 = Element('track')
         video.append(track1)
+        trackscroll = Element('track')
+        video.append(trackscroll)
+        trackquest = Element('track')
+        video.append(trackquest)
+
 
         audio = Element('audio')
         media.append(audio)
@@ -367,8 +589,10 @@ def run_tree(
         duration.text=str(total_duration)
         audio.append(duration)  
         track2 = Element('track')
+        track2.attrib['MZ.TrackTargeted']="0"
         audio.append(track2)
         track3 = Element('track')
+        track3.attrib['MZ.TrackTargeted']="0"
         audio.append(track3)    
 
         start = 0
@@ -409,6 +633,29 @@ def run_tree(
             else:
                 start = end
                 end = start + end_index_frame[i][j+1] - start_index_frame[i][j+1]
+
+        clipscroll = scrollclipitem(
+            'scroll.png',
+            video_list[i], 
+            str(quest_start), 
+            str(quest_end), 
+            str(quest_start), 
+            str(quest_end), 
+            current_path
+            )
+        trackscroll.append(clipscroll)
+        clipquest = questclipitem(
+            video_list[i].rstrip('.mp4')+'_quest_bgremoved.png',
+            video_list[i], 
+            str(quest_start), 
+            str(quest_end), 
+            str(quest_start), 
+            str(quest_end), 
+            current_path
+            )
+        trackquest.append(clipquest)
+
+
 
         tree = ElementTree(xmeml)
         fileName = current_path+"/inputvideo/xmlcache/"+ video_list[i].rstrip('.mp4')+".xml"

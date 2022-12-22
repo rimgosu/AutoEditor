@@ -103,7 +103,7 @@ def run_autoEditor(
             )
         videopy.append(VideoFileClip(current_path+"/inputvideo/" + video_list[i]))
         frameend.append(math.floor(videopy[i].end * framerate))
-    print(frameend)
+
 
     # 1. framerate change
     if FRchange:
@@ -262,7 +262,10 @@ def run_autoEditor(
                     EMOVE_INDEX[i].append(j)
                     EMOVE_INDEX[i].sort()
                     bang_index[i].append(j)
-
+                if yolo_list[i][j][k][0] == '20':
+                    EMOVE_INDEX[i].append(j)
+                    EMOVE_INDEX[i].sort()
+                    bang_index[i].append(j)
                 if yolo_list[i][j][k][0] == '21' and float(yolo_list[i][j][k][5]) > 0.70:
                     star_index[i].append(j)
                     star_index[i].sort()
@@ -345,6 +348,10 @@ def run_autoEditor(
         print("gametogame_index")
         print(gametogame_index)
 
+        if len(gameend_index[i]) == 0:
+            for j in gametogame_index[i]:
+                gameend_index[i].append(j)
+
         if len(gamestart_index[i]) == 0:
             gamestart_index[i].append(0)
 
@@ -356,7 +363,9 @@ def run_autoEditor(
             if len(gameend_index[i]) == 0:
                 gameend_index[i].append(frameend[i])
                 break
+
         print(gameend_index[i])
+
         if len(gamestart_index[i]) != 0:
             gamestart.append(max(gamestart_index[i]) + gamestart_constant)
         else:
@@ -1092,11 +1101,11 @@ if __name__=="__main__":
         exf,
         framerate=3,
         res=1/3,
-        user='seseisei',
-        FRchange=True ,
-        yoloDetect=True,
+        user='rimgosu',
+        FRchange=False ,
+        yoloDetect=False,
         changeXml=True,
-        Premiere=False,
+        Premiere=True,
         uploadYotube=False
     )
     

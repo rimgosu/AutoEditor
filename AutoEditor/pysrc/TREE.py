@@ -33,7 +33,6 @@ def videoclipitem(video, timein, timeout, start, end, videoend, linknumber, curr
     file = Element('file')
     file.attrib['id']= video
     clipitem.append(file)
-
     name = Element('name')
     name.text= video
     file.append(name)
@@ -634,427 +633,430 @@ def soundeffectclipitem(efsoundfile, timein, timeout, start, end, efsoundfile_pa
 
 def run_tree(
     current_path,
-    video_list,
+    video,
     fr,
     start_index_frame,
     end_index_frame,
     quest_start,
     quest_end
     ):
-    for i in range(len(video_list)):
-        videopy = VideoFileClip(current_path + "/inputvideo/" + video_list[i])
-        total_duration = videopy.end * fr
-        scroll_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'scroll.png'
-        xmeml = Element('xmeml')
-        xmeml.attrib['version']='5'
+    videopy = VideoFileClip(current_path + "/inputvideo/" + video)
+    total_duration = videopy.end * fr
+    scroll_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'scroll.png'
+    xmeml = Element('xmeml')
+    xmeml.attrib['version']='5'
 
-        sequence = Element('sequence')
-        sequence.attrib['id']="video"
-        xmeml.append(sequence)
+    sequence = Element('sequence')
+    sequence.attrib['id']="video"
+    xmeml.append(sequence)
 
-        name = Element('name')
-        name.text=video_list[i].rstrip('.mp4')
-        sequence.append(name)
-        duration = Element('duration')
-        duration.text=str(total_duration)
-        sequence.append(duration)
-        rate = Element('rate')
-        sequence.append(rate)
-        
-        timebase = Element('timebase')
-        timebase.text='60'
-        rate.append(timebase)
-        ntsc = Element('ntsc')
-        ntsc.text='false'
-        rate.append(ntsc)
+    name = Element('name')
+    name.text=video.rstrip('.mp4')
+    sequence.append(name)
+    duration = Element('duration')
+    duration.text=str(total_duration)
+    sequence.append(duration)
+    rate = Element('rate')
+    sequence.append(rate)
+    
+    timebase = Element('timebase')
+    timebase.text='60'
+    rate.append(timebase)
+    ntsc = Element('ntsc')
+    ntsc.text='false'
+    rate.append(ntsc)
 
-        media = Element('media')
-        sequence.append(media)
+    media = Element('media')
+    sequence.append(media)
 
-        video = Element('video')
-        media.append(video)
+    videoe = Element('video')
+    media.append(videoe)
 
-        format = Element('format')
-        video.append(format)
+    format = Element('format')
+    videoe.append(format)
 
-        samplecharacteristics = Element('samplecharacteristics')
-        format.append(samplecharacteristics)
+    samplecharacteristics = Element('samplecharacteristics')
+    format.append(samplecharacteristics)
 
-        width = Element('width')
-        width.text='1920'
-        samplecharacteristics.append(width)
-        height = Element('height')
-        height.text='1080'
-        samplecharacteristics.append(height)
-        anamorphic = Element('anamorphic')
-        anamorphic.text='false'
-        samplecharacteristics.append(anamorphic)
-        pixelaspectratio = Element('pixelaspectratio')
-        pixelaspectratio.text='square'
-        samplecharacteristics.append(pixelaspectratio)
-        fielddominance = Element('fielddominance')
-        fielddominance.text='none'
-        samplecharacteristics.append(fielddominance)
+    width = Element('width')
+    width.text='1920'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text='1080'
+    samplecharacteristics.append(height)
+    anamorphic = Element('anamorphic')
+    anamorphic.text='false'
+    samplecharacteristics.append(anamorphic)
+    pixelaspectratio = Element('pixelaspectratio')
+    pixelaspectratio.text='square'
+    samplecharacteristics.append(pixelaspectratio)
+    fielddominance = Element('fielddominance')
+    fielddominance.text='none'
+    samplecharacteristics.append(fielddominance)
 
-        track1 = Element('track')
-        video.append(track1)
-        trackscroll = Element('track')
-        video.append(trackscroll)
-        trackquest = Element('track')
-        video.append(trackquest)
-        trackfrontscroll = Element('track')
-        video.append(trackfrontscroll)
+    track1 = Element('track')
+    videoe.append(track1)
+    trackscroll = Element('track')
+    videoe.append(trackscroll)
+    trackquest = Element('track')
+    videoe.append(trackquest)
+    trackfrontscroll = Element('track')
+    videoe.append(trackfrontscroll)
 
-        audio = Element('audio')
-        media.append(audio)
-        inn = Element('in')
-        inn.text='0'
-        audio.append(inn)
-        o = Element('out')
-        o.text=str(total_duration)
-        audio.append(o)
-        channelcount = Element('channelcount')
-        channelcount.text='2'
-        audio.append(channelcount)
-        duration = Element('duration')
-        duration.text=str(total_duration)
-        audio.append(duration)  
-        track2 = Element('track')
-        track2.attrib['MZ.TrackTargeted']="0"
-        audio.append(track2)
-        track3 = Element('track')
-        track3.attrib['MZ.TrackTargeted']="0"
-        audio.append(track3)    
-        trackefsound = Element('track')
-        audio.append(trackefsound)
+    audio = Element('audio')
+    media.append(audio)
+    inn = Element('in')
+    inn.text='0'
+    audio.append(inn)
+    o = Element('out')
+    o.text=str(total_duration)
+    audio.append(o)
+    channelcount = Element('channelcount')
+    channelcount.text='2'
+    audio.append(channelcount)
+    duration = Element('duration')
+    duration.text=str(total_duration)
+    audio.append(duration)  
+    track2 = Element('track')
+    track2.attrib['MZ.TrackTargeted']="0"
+    audio.append(track2)
+    track3 = Element('track')
+    track3.attrib['MZ.TrackTargeted']="0"
+    audio.append(track3)    
+    trackefsound = Element('track')
+    audio.append(trackefsound)
 
-        start = 0
-        end = end_index_frame[i][0] - start_index_frame[i][0]
-        for j in range(len(start_index_frame[i])):
-            clip1 = videoclipitem(
-                video_list[i], 
-                str(start_index_frame[i][j]), 
-                str(end_index_frame[i][j]), 
-                str(start), 
-                str(end), 
-                str(total_duration), 
-                str(j),
-                current_path
-                )
-            track1.append(clip1)
-
-            clip2 = audioclipitem1(
-                video_list[i],
-                str(start_index_frame[i][j]), 
-                str(end_index_frame[i][j]), 
-                str(start), 
-                str(end)
-            )
-            track2.append(clip2)
-
-            clip3 = audioclipitem2(
-                video_list[i],
-                str(start_index_frame[i][j]), 
-                str(end_index_frame[i][j]), 
-                str(start), 
-                str(end)
-            )
-            track3.append(clip3)
-
-            if j==len(start_index_frame[i]) - 1:
-                break
-            else:
-                start = end
-                end = start + end_index_frame[i][j+1] - start_index_frame[i][j+1]
-
-        clipscroll = scrollclipitem(
-            'scroll.png',
-            video_list[i], 
-            str(quest_start), 
-            str(quest_end), 
-            str(quest_start), 
-            str(quest_end), 
-            current_path,
-            scroll_path
-            )
-        trackscroll.append(clipscroll)
-        clipquest = questclipitem(
-            video_list[i].rstrip('.mp4')+'_quest_bgremoved.png',
-            video_list[i], 
-            str(quest_start), 
-            str(quest_end), 
-            str(quest_start), 
-            str(quest_end), 
+    start = 0
+    end = end_index_frame[0] - start_index_frame[0]
+    for j in range(len(start_index_frame)):
+        clip1 = videoclipitem(
+            video, 
+            str(start_index_frame[j]), 
+            str(end_index_frame[j]), 
+            str(start), 
+            str(end), 
+            str(total_duration), 
+            str(j),
             current_path
             )
-        trackquest.append(clipquest)
-        soundeffect = soundeffectclipitem(
-            'Hole_punch.mp3',
-            '0',
-            '60',
-            str(quest_start),
-            str(quest_start + 60),
-            current_path + r'\pysrc\wav_src\Hole_punch.mp3',
-            '60'
+        track1.append(clip1)
+
+        clip2 = audioclipitem1(
+            video,
+            str(start_index_frame[j]), 
+            str(end_index_frame[j]), 
+            str(start), 
+            str(end)
         )
-        trackefsound.append(soundeffect)
+        track2.append(clip2)
+
+        clip3 = audioclipitem2(
+            video,
+            str(start_index_frame[j]), 
+            str(end_index_frame[j]), 
+            str(start), 
+            str(end)
+        )
+        track3.append(clip3)
+
+        if j==len(start_index_frame) - 1:
+            break
+        else:
+            start = end
+            end = start + end_index_frame[j+1] - start_index_frame[j+1]
+
+    clipscroll = scrollclipitem(
+        'scroll.png',
+        video, 
+        str(quest_start), 
+        str(quest_end), 
+        str(quest_start), 
+        str(quest_end), 
+        current_path,
+        scroll_path
+        )
+    trackscroll.append(clipscroll)
+    clipquest = questclipitem(
+        video.rstrip('.mp4')+'_quest_bgremoved.png',
+        video, 
+        str(quest_start), 
+        str(quest_end), 
+        str(quest_start), 
+        str(quest_end), 
+        current_path
+        )
+    trackquest.append(clipquest)
+    soundeffect = soundeffectclipitem(
+        'Hole_punch.mp3',
+        '0',
+        '60',
+        str(quest_start),
+        str(quest_start + 60),
+        current_path + r'\pysrc\wav_src\Hole_punch.mp3',
+        '60'
+    )
+    trackefsound.append(soundeffect)
 
 
-        tree = ElementTree(xmeml)
-        fileName = current_path+"/inputvideo/xmlcache/"+ video_list[i].rstrip('.mp4')+".xml"
-        with open(fileName, "wb") as file:
-            tree.write(file, encoding='utf-8', xml_declaration=True)
+    tree = ElementTree(xmeml)
+    fileName = current_path+"/inputvideo/xmlcache/"+ video.rstrip('.mp4')+".xml"
+    with open(fileName, "wb") as file:
+        tree.write(file, encoding='utf-8', xml_declaration=True)
 def run_dissolve_all(
     current_path,
-    video_list,
+    video,
     fr,
     start_index_frame,
     end_index_frame,
     video_dissolve_duration,
     audio_dissolve_duration
     ):
-    for i in range(len(video_list)):
-        videopy = VideoFileClip(current_path + "/inputvideo/" + video_list[i])
-        total_duration = videopy.end * fr
+    videopy = VideoFileClip(current_path + "/inputvideo/" + video)
+    total_duration = videopy.end * fr
 
-        xmeml = Element('xmeml')
-        xmeml.attrib['version']='5'
+    xmeml = Element('xmeml')
+    xmeml.attrib['version']='5'
 
-        sequence = Element('sequence')
-        sequence.attrib['id']="video"
-        xmeml.append(sequence)
+    sequence = Element('sequence')
+    sequence.attrib['id']="video"
+    xmeml.append(sequence)
 
-        name = Element('name')
-        name.text=video_list[i].rstrip('.mp4')
-        sequence.append(name)
-        duration = Element('duration')
-        duration.text=str(total_duration)
-        sequence.append(duration)
-        rate = Element('rate')
-        sequence.append(rate)
-        
-        timebase = Element('timebase')
-        timebase.text='60'
-        rate.append(timebase)
-        ntsc = Element('ntsc')
-        ntsc.text='false'
-        rate.append(ntsc)
+    name = Element('name')
+    name.text=video.rstrip('.mp4')
+    sequence.append(name)
+    duration = Element('duration')
+    duration.text=str(total_duration)
+    sequence.append(duration)
+    rate = Element('rate')
+    sequence.append(rate)
+    
+    timebase = Element('timebase')
+    timebase.text='60'
+    rate.append(timebase)
+    ntsc = Element('ntsc')
+    ntsc.text='false'
+    rate.append(ntsc)
 
-        media = Element('media')
-        sequence.append(media)
+    media = Element('media')
+    sequence.append(media)
 
-        video = Element('video')
-        media.append(video)
+    video = Element('video')
+    media.append(video)
 
-        format = Element('format')
-        video.append(format)
+    format = Element('format')
+    video.append(format)
 
-        samplecharacteristics = Element('samplecharacteristics')
-        format.append(samplecharacteristics)
+    samplecharacteristics = Element('samplecharacteristics')
+    format.append(samplecharacteristics)
 
-        width = Element('width')
-        width.text='1920'
-        samplecharacteristics.append(width)
-        height = Element('height')
-        height.text='1080'
-        samplecharacteristics.append(height)
-        anamorphic = Element('anamorphic')
-        anamorphic.text='false'
-        samplecharacteristics.append(anamorphic)
-        pixelaspectratio = Element('pixelaspectratio')
-        pixelaspectratio.text='square'
-        samplecharacteristics.append(pixelaspectratio)
-        fielddominance = Element('fielddominance')
-        fielddominance.text='none'
-        samplecharacteristics.append(fielddominance)
+    width = Element('width')
+    width.text='1920'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text='1080'
+    samplecharacteristics.append(height)
+    anamorphic = Element('anamorphic')
+    anamorphic.text='false'
+    samplecharacteristics.append(anamorphic)
+    pixelaspectratio = Element('pixelaspectratio')
+    pixelaspectratio.text='square'
+    samplecharacteristics.append(pixelaspectratio)
+    fielddominance = Element('fielddominance')
+    fielddominance.text='none'
+    samplecharacteristics.append(fielddominance)
 
-        track1 = Element('track')
-        video.append(track1)
+    track1 = Element('track')
+    video.append(track1)
 
-        audio = Element('audio')
-        media.append(audio)
-        inn = Element('in')
-        inn.text='0'
-        audio.append(inn)
-        o = Element('out')
-        o.text=str(total_duration)
-        audio.append(o)
-        channelcount = Element('channelcount')
-        channelcount.text='2'
-        audio.append(channelcount)
-        duration = Element('duration')
-        duration.text=str(total_duration)
-        audio.append(duration)  
-        track2 = Element('track')
-        audio.append(track2)
-        track3 = Element('track')
-        audio.append(track3)    
+    audio = Element('audio')
+    media.append(audio)
+    inn = Element('in')
+    inn.text='0'
+    audio.append(inn)
+    o = Element('out')
+    o.text=str(total_duration)
+    audio.append(o)
+    channelcount = Element('channelcount')
+    channelcount.text='2'
+    audio.append(channelcount)
+    duration = Element('duration')
+    duration.text=str(total_duration)
+    audio.append(duration)  
+    track2 = Element('track')
+    audio.append(track2)
+    track3 = Element('track')
+    audio.append(track3)    
 
-        start = []
-        end =[]
-        start.append(0)
-        end.append(start[0] + end_index_frame[i][0] - start_index_frame[i][0])
-        for j in range(len(start_index_frame[i])-1):
-            start.append(end[j])
-            end.append(start[j+1] + end_index_frame[i][j+1] - start_index_frame[i][j+1])
+    start = []
+    end =[]
+    start.append(0)
+    end.append(start[0] + end_index_frame[0] - start_index_frame[0])
+    for j in range(len(start_index_frame)-1):
+        start.append(end[j])
+        end.append(start[j+1] + end_index_frame[j+1] - start_index_frame[j+1])
 
-        print(start)
-        print(end)
+    print(start)
+    print(end)
 
+    clip1 = videoclipitem(
+        video, 
+        str(start_index_frame[0]), 
+        str(end_index_frame[0]+video_dissolve_duration), 
+        str(start[0]), 
+        '-1', 
+        str(total_duration), 
+        str(0),
+        current_path
+        )
+    track1.append(clip1)
+    clip1 = videotransitionitem(end[0], video_dissolve_duration)
+    track1.append(clip1)
+    clip2 = audioclipitem1(
+        video,
+        str(start_index_frame[0]), 
+        str(end_index_frame[0]+audio_dissolve_duration), 
+        str(start[0]), 
+        '-1'
+    )
+    track2.append(clip2)
+    clip2 = audiotransitionitem(end[0], audio_dissolve_duration)
+    track2.append(clip2)
+    clip3 = audioclipitem2(
+        video,
+        str(start_index_frame[0]), 
+        str(end_index_frame[0]+audio_dissolve_duration), 
+        str(start[0]), 
+        '-1'
+    )
+    track3.append(clip3)
+    clip3 = audiotransitionitem(end[0], audio_dissolve_duration)
+    track3.append(clip3)
+    for j in range(1, len(start_index_frame)-1):
         clip1 = videoclipitem(
-            video_list[i], 
-            str(start_index_frame[i][0]), 
-            str(end_index_frame[i][0]+video_dissolve_duration), 
-            str(start[0]), 
+            video, 
+            str(start_index_frame[j]-video_dissolve_duration), 
+            str(end_index_frame[j]+video_dissolve_duration), 
+            '-1', 
             '-1', 
             str(total_duration), 
-            str(0),
+            str(j),
             current_path
             )
         track1.append(clip1)
-        clip1 = videotransitionitem(end[0], video_dissolve_duration)
+
+        clip1 = videotransitionitem(end[j], video_dissolve_duration)
         track1.append(clip1)
-        clip2 = audioclipitem1(
-            video_list[i],
-            str(start_index_frame[i][0]), 
-            str(end_index_frame[i][0]+audio_dissolve_duration), 
-            str(start[0]), 
-            '-1'
-        )
-        track2.append(clip2)
-        clip2 = audiotransitionitem(end[0], audio_dissolve_duration)
-        track2.append(clip2)
-        clip3 = audioclipitem2(
-            video_list[i],
-            str(start_index_frame[i][0]), 
-            str(end_index_frame[i][0]+audio_dissolve_duration), 
-            str(start[0]), 
-            '-1'
-        )
-        track3.append(clip3)
-        clip3 = audiotransitionitem(end[0], audio_dissolve_duration)
-        track3.append(clip3)
-        for j in range(1, len(start_index_frame[i])-1):
-            clip1 = videoclipitem(
-                video_list[i], 
-                str(start_index_frame[i][j]-video_dissolve_duration), 
-                str(end_index_frame[i][j]+video_dissolve_duration), 
-                '-1', 
-                '-1', 
-                str(total_duration), 
-                str(j),
-                current_path
-                )
-            track1.append(clip1)
 
-            clip1 = videotransitionitem(end[j], video_dissolve_duration)
-            track1.append(clip1)
-
-            clip1 = videoclipitem(
-                video_list[i], 
-                str(start_index_frame[i][j+1]-video_dissolve_duration), 
-                str(end_index_frame[i][j+1]+video_dissolve_duration), 
-                '-1', 
-                '-1', 
-                str(total_duration), 
-                str(j),
-                current_path
-                )
-            track1.append(clip1)
-
-            clip2 = audioclipitem1(
-                video_list[i],
-                str(start_index_frame[i][j]-audio_dissolve_duration), 
-                str(end_index_frame[i][j]+audio_dissolve_duration), 
-                '-1', 
-                '-1'
-            )
-            track2.append(clip2)
-
-            clip2 = audiotransitionitem(end[j], audio_dissolve_duration)
-            track2.append(clip2)
-
-            clip2 = audioclipitem1(
-                video_list[i],
-                str(start_index_frame[i][j+1]-audio_dissolve_duration), 
-                str(end_index_frame[i][j+1]+audio_dissolve_duration), 
-                '-1', 
-                '-1'
-            )
-            track2.append(clip2)
-
-            clip3 = audioclipitem2(
-                video_list[i],
-                str(start_index_frame[i][j]-audio_dissolve_duration), 
-                str(end_index_frame[i][j]+audio_dissolve_duration), 
-                '-1', 
-                '-1'
-            )
-            track3.append(clip3)
-
-            clip3 = audiotransitionitem(end[j], audio_dissolve_duration)
-            track3.append(clip3)
-
-            clip3 = audioclipitem2(
-                video_list[i],
-                str(start_index_frame[i][j+1]-audio_dissolve_duration), 
-                str(end_index_frame[i][j+1]+audio_dissolve_duration), 
-                '-1', 
-                '-1'
-            )
-            track3.append(clip3)
-        clip1 = videotransitionitem(start[len(start)-1], video_dissolve_duration)
-        track1.append(clip1)
         clip1 = videoclipitem(
-            video_list[i], 
-            str(start_index_frame[i][len(start)-1]-video_dissolve_duration), 
-            str(end_index_frame[i][len(start)-1]), 
+            video, 
+            str(start_index_frame[j+1]-video_dissolve_duration), 
+            str(end_index_frame[j+1]+video_dissolve_duration), 
             '-1', 
-            str(end[len(start)-1]), 
+            '-1', 
             str(total_duration), 
-            str(0),
+            str(j),
             current_path
             )
         track1.append(clip1)
-        clip2 = audiotransitionitem(start[len(start)-1], audio_dissolve_duration)
-        track2.append(clip2)
+
         clip2 = audioclipitem1(
-            video_list[i],
-            str(start_index_frame[i][len(start)-1]-audio_dissolve_duration), 
-            str(end_index_frame[i][len(start)-1]), 
+            video,
+            str(start_index_frame[j]-audio_dissolve_duration), 
+            str(end_index_frame[j]+audio_dissolve_duration), 
             '-1', 
-            str(end[len(start)-1]), 
+            '-1'
         )
         track2.append(clip2)
-        clip3 = audiotransitionitem(start[len(start)-1], audio_dissolve_duration)
-        track3.append(clip3)
-        clip3 = audioclipitem2(
-            video_list[i],
-            str(start_index_frame[i][len(start)-1]-audio_dissolve_duration), 
-            str(end_index_frame[i][len(start)-1]), 
+
+        clip2 = audiotransitionitem(end[j], audio_dissolve_duration)
+        track2.append(clip2)
+
+        clip2 = audioclipitem1(
+            video,
+            str(start_index_frame[j+1]-audio_dissolve_duration), 
+            str(end_index_frame[j+1]+audio_dissolve_duration), 
             '-1', 
-            str(end[len(start)-1]), 
+            '-1'
+        )
+        track2.append(clip2)
+
+        clip3 = audioclipitem2(
+            video,
+            str(start_index_frame[j]-audio_dissolve_duration), 
+            str(end_index_frame[j]+audio_dissolve_duration), 
+            '-1', 
+            '-1'
         )
         track3.append(clip3)
 
-        tree = ElementTree(xmeml)
-        fileName = current_path+"/inputvideo/xmlcache/"+ video_list[i].rstrip('mp4')+".xml"
-        with open(fileName, "wb") as file:
-            tree.write(file, encoding='utf-8', xml_declaration=True)
+        clip3 = audiotransitionitem(end[j], audio_dissolve_duration)
+        track3.append(clip3)
+
+        clip3 = audioclipitem2(
+            video,
+            str(start_index_frame[j+1]-audio_dissolve_duration), 
+            str(end_index_frame[j+1]+audio_dissolve_duration), 
+            '-1', 
+            '-1'
+        )
+        track3.append(clip3)
+    clip1 = videotransitionitem(start[len(start)-1], video_dissolve_duration)
+    track1.append(clip1)
+    clip1 = videoclipitem(
+        video, 
+        str(start_index_frame[len(start)-1]-video_dissolve_duration), 
+        str(end_index_frame[len(start)-1]), 
+        '-1', 
+        str(end[len(start)-1]), 
+        str(total_duration), 
+        str(0),
+        current_path
+        )
+    track1.append(clip1)
+    clip2 = audiotransitionitem(start[len(start)-1], audio_dissolve_duration)
+    track2.append(clip2)
+    clip2 = audioclipitem1(
+        video,
+        str(start_index_frame[len(start)-1]-audio_dissolve_duration), 
+        str(end_index_frame[len(start)-1]), 
+        '-1', 
+        str(end[len(start)-1]), 
+    )
+    track2.append(clip2)
+    clip3 = audiotransitionitem(start[len(start)-1], audio_dissolve_duration)
+    track3.append(clip3)
+    clip3 = audioclipitem2(
+        video,
+        str(start_index_frame[len(start)-1]-audio_dissolve_duration), 
+        str(end_index_frame[len(start)-1]), 
+        '-1', 
+        str(end[len(start)-1]), 
+    )
+    track3.append(clip3)
+
+    tree = ElementTree(xmeml)
+    fileName = current_path+"/inputvideo/xmlcache/"+ video.rstrip('mp4')+".xml"
+    with open(fileName, "wb") as file:
+        tree.write(file, encoding='utf-8', xml_declaration=True)
 
 if __name__ == "__main__":
     current_path = os.path.dirname(__file__)
     current_path = os.path.join(current_path, os.pardir)
-    print(current_path)
     video_list = os.listdir(current_path + "/inputvideo/")
     video_list = [file for file in video_list if file.endswith(".mp4")]
+    print(video_list)
+    print(video_list[0])
     fr = 60
-    start_index_frame = [[100, 200], [150, 300, 450]]
-    end_index_frame = [[150, 250], [200, 400, 700]]
+    start_index_frame = [100, 200]
+    end_index_frame = [150, 250]
+    quest_start = 150
+    quest_end = 200
     run_tree(
         current_path,
-        video_list,
+        video_list[0],
         fr,
         start_index_frame,
-        end_index_frame
+        end_index_frame,
+        quest_start,
+        quest_end
         )

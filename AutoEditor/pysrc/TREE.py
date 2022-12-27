@@ -1,6 +1,9 @@
 from xml.etree.ElementTree import *
 import os
+import sys
 from moviepy.editor import VideoFileClip
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from pysrc.user_discrimination import who
 
 def videoclipitem(video, timein, timeout, start, end, videoend, linknumber, current_path):
     clipitem = Element('clipitem')
@@ -631,6 +634,103 @@ def soundeffectclipitem(efsoundfile, timein, timeout, start, end, efsoundfile_pa
 
     return clipitem
 
+def bgmclipitem(bgmsoundfile, timein, timeout, start, end, bgmsoundfile_path, length, tracknumber):
+    clipitem = Element('clipitem')
+    name = Element('name')
+    name.text= bgmsoundfile
+    clipitem.append(name)
+    enabled = Element('enabled')
+    enabled.text= 'true'
+    clipitem.append(enabled)
+    duration = Element('duration')
+    duration.text= length
+    clipitem.append(duration)
+    rate = Element('rate')
+    clipitem.append(rate)
+    timebase = Element('timebase')
+    timebase.text= '60'
+    rate.append(timebase)
+    ntsc = Element('ntsc')
+    ntsc.text= 'false'
+    rate.append(ntsc)
+    tin = Element('in')
+    tin.text= timein
+    clipitem.append(tin)
+    tout = Element('out')
+    tout.text= timeout
+    clipitem.append(tout)
+    st = Element('start')
+    st.text= start
+    clipitem.append(st)
+    en = Element('end')
+    en.text= end
+    clipitem.append(en)
+
+    file = Element('file')
+    file.attrib['id']= bgmsoundfile
+    clipitem.append(file)
+    name = Element('name')
+    name.text= bgmsoundfile
+    file.append(name)
+    pathurl = Element('pathurl')
+    pathurl.text= bgmsoundfile_path
+    file.append(pathurl)
+    rate2 = Element('rate')
+    file.append(rate2)
+    timebase = Element('timebase')
+    timebase.text= '30'
+    rate2.append(timebase)
+    ntsc = Element('ntsc')
+    ntsc.text= 'true'
+    rate2.append(ntsc)
+    duration2 = Element('duration')
+    duration2.text= '29'
+    file.append(duration2)
+    timecode = Element('timecode')
+    file.append(timecode)
+    rate3 = Element('rate')
+    timecode.append(rate3)
+    timebase = Element('timebase')
+    timebase.text= '30'
+    rate3.append(timebase)
+    ntsc = Element('ntsc')
+    ntsc.text= 'true'
+    rate3.append(ntsc)
+    string = Element('string')
+    string.text= '00;00;00;00'
+    timecode.append(string)
+    frame = Element('frame')
+    frame.text= '0'
+    timecode.append(frame)
+    displayformat = Element('displayformat')
+    displayformat.text= 'DF'
+    timecode.append(displayformat)
+    media = Element('media')
+    file.append(media)
+    audio = Element('audio')
+    media.append(audio)
+    samplecharacteristics = Element('samplecharacteristics')
+    audio.append(samplecharacteristics)
+    depth = Element('depth')
+    depth.text= '16'
+    samplecharacteristics.append(depth)
+    samplerate = Element('samplerate')
+    samplerate.text= '44100'
+    samplecharacteristics.append(samplerate)
+    channelcount = Element('channelcount')
+    channelcount.text= '2'
+    audio.append(channelcount)
+    sourcetrack = Element('sourcetrack')
+    clipitem.append(sourcetrack)
+    mediatype = Element('mediatype')
+    mediatype.text= 'audio'
+    sourcetrack.append(mediatype)
+    trackindex = Element('trackindex')
+    trackindex.text= tracknumber
+    sourcetrack.append(trackindex)
+
+    return clipitem
+
 def run_tree(
     current_path,
     video,
@@ -797,6 +897,35 @@ def run_tree(
     )
     trackefsound.append(soundeffect)
 
+    user = who(video)
+    print('user: ' + user)
+    if user == 'beterbabbit':
+        beterbabbit_bgm1 = bgmclipitem(
+            'BETERBABBIT_BGM.mp3',
+            str(0),
+            str(end),
+            str(0),
+            str(end),
+            current_path + r'\pysrc\wav_src\BETERBABBIT_BGM.mp3',
+            str(106992),
+            str(1)
+        )
+        beterbabbit_bgm2 = bgmclipitem(
+            'BETERBABBIT_BGM.mp3',
+            str(0),
+            str(end),
+            str(0),
+            str(end),
+            current_path + r'\pysrc\wav_src\BETERBABBIT_BGM.mp3',
+            str(106992),
+            str(2)
+        )
+        trackbgm1 = Element('track')
+        audio.append(trackbgm1)
+        trackbgm2 = Element('track')
+        audio.append(trackbgm2)
+        trackbgm1.append(beterbabbit_bgm1)
+        trackbgm2.append(beterbabbit_bgm2)
 
     tree = ElementTree(xmeml)
     fileName = current_path+"/inputvideo/xmlcache/"+ video.rstrip('.mp4')+".xml"

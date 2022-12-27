@@ -114,7 +114,7 @@ def detect_quest(video, target_time, output_path, user):
     what_quest(video, target_time, output_path, user)
     if os.path.exists(ROOT / 'runs/qdetect'):
         shutil.rmtree(ROOT / 'runs/qdetect')
-    runq(weights=ROOT / 'models/quest_recognize.pt', source=output_path.rstrip('quest/') + "/questlarge" , save_txt = True, conf_thres=0.5, project=ROOT / 'runs/qdetect', name='exp')
+    runq(weights=ROOT / 'models/quest_recognize_ver2.pt', source=output_path.rstrip('quest/') + "/questlarge" , save_txt = True, conf_thres=0.5, project=ROOT / 'runs/qdetect', name='exp')
 
 if __name__ == "__main__":
     current_path = os.path.dirname(__file__)

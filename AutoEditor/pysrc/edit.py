@@ -58,7 +58,6 @@ def run_autoPremiere(
     premiere_path = r'C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe'
     xml_path = current_path + r"\inputvideo\xmlcache" +"\\" + video.rstrip('.mp4') + '.xml'
     ex_file = ex +  '\\' + video.rstrip('.mp4') + "edited.mp4"
-    print(ex_file)
     ex_file.replace("/", "\\")
     print(ex_file)
     if os.path.exists(ex_file):

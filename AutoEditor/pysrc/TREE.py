@@ -738,7 +738,8 @@ def run_tree(
     start_index_frame,
     end_index_frame,
     quest_start,
-    quest_end
+    quest_end,
+    quest_bool
     ):
     videopy = VideoFileClip(current_path + "/inputvideo/" + video)
     total_duration = videopy.end * fr
@@ -865,37 +866,38 @@ def run_tree(
             start = end
             end = start + end_index_frame[j+1] - start_index_frame[j+1]
 
-    clipscroll = scrollclipitem(
-        'scroll.png',
-        video, 
-        str(quest_start), 
-        str(quest_end), 
-        str(quest_start), 
-        str(quest_end), 
-        current_path,
-        scroll_path
+    if quest_bool:
+        clipscroll = scrollclipitem(
+            'scroll.png',
+            video, 
+            str(quest_start), 
+            str(quest_end), 
+            str(quest_start), 
+            str(quest_end), 
+            current_path,
+            scroll_path
+            )
+        trackscroll.append(clipscroll)
+        clipquest = questclipitem(
+            video.rstrip('.mp4')+'_quest_bgremoved.png',
+            video, 
+            str(quest_start), 
+            str(quest_end), 
+            str(quest_start), 
+            str(quest_end), 
+            current_path
+            )
+        trackquest.append(clipquest)
+        soundeffect = soundeffectclipitem(
+            'Hole_punch.mp3',
+            '0',
+            '60',
+            str(quest_start),
+            str(quest_start + 60),
+            current_path + r'\pysrc\wav_src\Hole_punch.mp3',
+            '60'
         )
-    trackscroll.append(clipscroll)
-    clipquest = questclipitem(
-        video.rstrip('.mp4')+'_quest_bgremoved.png',
-        video, 
-        str(quest_start), 
-        str(quest_end), 
-        str(quest_start), 
-        str(quest_end), 
-        current_path
-        )
-    trackquest.append(clipquest)
-    soundeffect = soundeffectclipitem(
-        'Hole_punch.mp3',
-        '0',
-        '60',
-        str(quest_start),
-        str(quest_start + 60),
-        current_path + r'\pysrc\wav_src\Hole_punch.mp3',
-        '60'
-    )
-    trackefsound.append(soundeffect)
+        trackefsound.append(soundeffect)
 
     user = who(video)
     print('user: ' + user)

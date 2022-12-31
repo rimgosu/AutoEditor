@@ -332,7 +332,7 @@ def questclipitem(image,video, timein, timeout, start, end,current_path):
     name.text= image
     file.append(name)
     pathurl = Element('pathurl')
-    pathurl.text= current_path+"\\"+r"pysrc\image_src"+"\\"+video.rstrip('.mp4')+'_quest.png'
+    pathurl.text= current_path+"\\"+r"pysrc\image_src"+"\\"+video[:-4]+'_quest.png'
     file.append(pathurl)
     media = Element('media')
     file.append(media)
@@ -752,7 +752,7 @@ def run_tree(
     xmeml.append(sequence)
 
     name = Element('name')
-    name.text=video.rstrip('.mp4')
+    name.text=video[:-4]
     sequence.append(name)
     duration = Element('duration')
     duration.text=str(total_duration)
@@ -879,7 +879,7 @@ def run_tree(
             )
         trackscroll.append(clipscroll)
         clipquest = questclipitem(
-            video.rstrip('.mp4')+'_quest_bgremoved.png',
+            video[:-4]+'_quest_bgremoved.png',
             video, 
             str(quest_start), 
             str(quest_end), 
@@ -930,7 +930,7 @@ def run_tree(
         trackbgm2.append(beterbabbit_bgm2)
 
     tree = ElementTree(xmeml)
-    fileName = current_path+"/inputvideo/xmlcache/"+ video.rstrip('.mp4')+".xml"
+    fileName = current_path+"/inputvideo/xmlcache/"+ video[:-4]+".xml"
     with open(fileName, "wb") as file:
         tree.write(file, encoding='utf-8', xml_declaration=True)
 def run_dissolve_all(
@@ -953,7 +953,7 @@ def run_dissolve_all(
     xmeml.append(sequence)
 
     name = Element('name')
-    name.text=video.rstrip('.mp4')
+    name.text=video[:-4]
     sequence.append(name)
     duration = Element('duration')
     duration.text=str(total_duration)
@@ -1166,7 +1166,7 @@ def run_dissolve_all(
     track3.append(clip3)
 
     tree = ElementTree(xmeml)
-    fileName = current_path+"/inputvideo/xmlcache/"+ video.rstrip('mp4')+".xml"
+    fileName = current_path+"/inputvideo/xmlcache/"+ video[:-4]+".xml"
     with open(fileName, "wb") as file:
         tree.write(file, encoding='utf-8', xml_declaration=True)
 

@@ -37,8 +37,8 @@ if __name__ == "__main__":
     video_list = [file for file in video_list if file.endswith(".mp4")]
     videopy = VideoFileClip(inputvideo_path+ "/" + video_list[0])
     print(int(videopy.end*3))
-    mp4_to_wav(inputvideo_path+ "/" + video_list[0], wav_path + "/" + video_list[0].rstrip(".mp4") + '.wav')
-    max_volume_section = max_volume(wav_path + "/" + video_list[0].rstrip(".mp4") + '.wav', int(videopy.end*3))
+    mp4_to_wav(inputvideo_path+ "/" + video_list[0], wav_path + "/" + video_list[0][:-4] + '.wav')
+    max_volume_section = max_volume(wav_path + "/" + video_list[0][:-4] + '.wav', int(videopy.end*3))
     print(max_volume_section)
     print(len(max_volume_section))
 

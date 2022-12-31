@@ -26,9 +26,9 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from yolov5.detect_encoding import * 
 from pysrc.scr_detect import *
 
-def kill_premiere():
+def kill_process(process):
     for proc in psutil.process_iter():
-        if proc.name() == "Adobe Premiere Pro.exe":
+        if proc.name() == process:
             proc.kill()
 def check_hangul():
     pyautogui.write("hangul")
@@ -56,12 +56,18 @@ def run_autoPremiere(
     exposition1 = (508,202)
     exposition2 = (1858,988)
     premiere_path = r'C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe'
-    xml_path = current_path + r"\inputvideo\xmlcache" +"\\" + video.rstrip('.mp4') + '.xml'
-    ex_file = ex +  '\\' + video.rstrip('.mp4') + "edited.mp4"
+    xml_path = current_path + r"\inputvideo\xmlcache" +"\\" + video[:-4] + '.xml'
+    ex_file = ex +  '\\' + video[:-4] + "edited.mp4"
     ex_file.replace("/", "\\")
     print(ex_file)
     if os.path.exists(ex_file):
         os.remove(ex_file)
+    kill_process('Opencapture.exe')
+    kill_process('chrome.exe')
+    kill_process('explorer.exe')
+    kill_process("Adobe Premiere Pro.exe")   
+    kill_process("PotPlayer64.exe")   
+    kill_process("notepad.exe")
 
     subprocess.Popen(premiere_path)
     time.sleep(12)
@@ -123,7 +129,7 @@ def run_autoPremiere(
     pyautogui.click(exposition2)
     scr_path = current_path + "/yolov5/data/encodingimage/"
     scr_detect('encoding', current_path, scr_path, 'models/encoding.pt', 'runs/edetect')
-    kill_premiere()     
+    kill_process("Adobe Premiere Pro.exe")     
 
 if __name__=="__main__":
     current_path = os.path.dirname(__file__)

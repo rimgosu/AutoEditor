@@ -35,7 +35,7 @@ def check_hangul():
         time.sleep(0.1)
 def upload_youtube(current_path, video_list):
     for i in range(len(video_list)):
-        export_path = current_path + r'\inputvideo\export'+ '\\' + video_list[i].rstrip('.mp4') + "edited.mp4"
+        export_path = current_path + r'\inputvideo\export'+ '\\' + video_list[i][:-4] + "edited.mp4"
         subprocess.Popen(r"C:\Program Files\Google\Chrome\Application\chrome.exe")
         time.sleep(1)
         check_hangul()

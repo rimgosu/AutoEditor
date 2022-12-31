@@ -85,6 +85,13 @@ def trim_edge(_gamestart, _gameend, source_list):
         while j in source_list:
             source_list.remove(j)
     return source_list
+# 1 dimension list
+def check_listlength(index_list, i):
+    if len(index_list) == i:
+        pass
+    else:
+        index_list.append('__fail__')
+    return index_list
 def run_autoEditor(
     current_path,
     video_list,
@@ -108,11 +115,10 @@ def run_autoEditor(
     wav_path = []
     for i in range(len(video_list)):
         inputvideo_path.append(current_path+"/inputvideo/" + video_list[i])
-        wav_path.append(current_path+"/pysrc/wav/" + video_list[i].rstrip(".mp4") + ".wav")
+        wav_path.append(current_path+"/pysrc/wav/" + video_list[i][:-4] + ".wav")
         FRvideo_path.append(current_path+"/yolov5/data/videos/" + str(framerate) + "f" + str(resolution) + "r" + video_list[i])
         FRtext_path.append(
-            current_path+"/yolov5/runs/detect/exp/labels/" + str(framerate) + "f" + str(resolution) + "r" + video_list[i]
-            .rstrip('.mp4')
+            current_path+"/yolov5/runs/detect/exp/labels/" + str(framerate) + "f" + str(resolution) + "r" + video_list[i][:-4]
             )
         videopy.append(VideoFileClip(current_path+"/inputvideo/" + video_list[i]))
         frameend.append(math.floor(videopy[i].end * framerate))
@@ -159,9 +165,10 @@ def run_autoEditor(
                 line_list[i][j] = lines[i][j][k].split()
                 yolo_list[i][j].append(line_list[i][j])
 
-    # 3-2. 
-    if os.path.exists(exp_path):
-        DeleteAllFiles(exp_path)
+    # remove exp_path 
+    if Premiere:
+        if os.path.exists(exp_path):
+            DeleteAllFiles(exp_path)
 
     indexes = True
     if indexes:
@@ -243,7 +250,7 @@ def run_autoEditor(
 
         # chapter 6
         # expansions
-        EMPLOY_EXPANSION_CONSTANT = int( framerate * 1.5 )
+        EMPLOY_EXPANSION_CONSTANT = int( framerate * 3 )
         YOLOTOTAL_EXPANSION_THRESHOLD = int(1.5 * framerate)
 
         # dminion
@@ -307,6 +314,15 @@ def run_autoEditor(
         email_attatched = []
 
     for i in range(len(video_list)):
+        # check list length
+        gamestart = check_listlength(gamestart, i)
+        gameend = check_listlength(gameend, i)
+        quest_select_frame = check_listlength(quest_select_frame, i)
+        questimg_end_frame = check_listlength(questimg_end_frame, i)
+        speak_threshold = check_listlength(speak_threshold, i)
+        speak_threshold_star = check_listlength(speak_threshold_star, i)
+        quest_start_frame = check_listlength(quest_start_frame, i)
+        quest_end_frame = check_listlength(quest_end_frame, i)
         try:
             for j in range(len(yolo_list[i])):
                 for k in range(len(yolo_list[i][j])):
@@ -499,6 +515,8 @@ def run_autoEditor(
 
             print("gametogame_index")
             print(gametogame_index)
+            print('gameend_index')
+            print(gameend_index[i])
 
             if len(gameend_index[i]) == 0:
                 for j in gametogame_index[i]:
@@ -522,10 +540,6 @@ def run_autoEditor(
                 gamestart.append(max(gamestart_index[i]) + gamestart_constant)
             else:
                 gamestart.append(0)
-
-            print('length')
-            print(len(gameend_index[i]))
-            print(len(gametogame_index[i]))
 
             if len(gameend_index[i]) == 0 and len(gametogame_index[i]) == 0:
                 gameend_index[i].append(frameend[i])
@@ -640,7 +654,6 @@ def run_autoEditor(
                 BS_index[i].append(max(fix_house_index[i]))
                 BS_index[i].sort()
             
-
             print("ES, BS indexes final")
             print(ES_index[i])
             print(BS_index[i])
@@ -660,7 +673,9 @@ def run_autoEditor(
             print(battles[i])
 
             # 5-3-1. trim for shine
+            # 5-3-2. trim for last kelthuzad
             EMOVE_INDEX[i] = trim_edge(ES_index[i][0], gameend[i], EMOVE_INDEX[i])
+            kelthuzad_index[i] = trim_edge(gamestart[i], BS_index[i][len(BS_index[i])-1], kelthuzad_index[i])
 
             # 5-3-2. EMOVE INDEX EXPANSION
             for j in EMOVE_INDEX[i]:
@@ -1055,15 +1070,17 @@ def run_autoEditor(
                     quest_detect_sum += 1
                     if len(quest_label) == 1:
                         quest_bool = True
+                        email_attatched.append(video_list[i] + ' quest_labeling done')
                         break
                     if quest_detect_sum == framerate * 16:
                         quest_bool = False
+                        email_attatched.append(video_list[i] + ' quest_labeling failed')
                         break
 
             for j in range(3):
                 if os.path.exists(current_path + '/yolov5/runs/qdetect/exp/labels/large_quest' + str(j) + '.txt'):
                     quest_image = current_path + '/pysrc/quest/quest' + str(j) + '.png'
-                    quest_copy_image = current_path + '/pysrc/image_src/' + video_list[i].rstrip('.mp4') + '_quest.png'
+                    quest_copy_image = current_path + '/pysrc/image_src/' + video_list[i][:-4] + '_quest.png'
                     shutil.copy(quest_image, quest_copy_image)
                     break
             
@@ -1228,7 +1245,7 @@ def run_autoEditor(
         except:
             email_attatched.append(video_list[i] + ' failed!')
             pass
-        
+                
     send_email(email_attatched)
 
     # 11. upload youtube

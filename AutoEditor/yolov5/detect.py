@@ -255,5 +255,9 @@ def main(opt):
 
 
 if __name__ == "__main__":
-    opt = parse_opt()
-    main(opt)
+    run(
+        weights=ROOT / 'models/balgyun.pt',  # model path or triton URL
+        source=ROOT / 'data/baltest',  # file/dir/URL/glob/screen/0(webcam))
+    )
+    # opt = parse_opt()
+    # main(opt)

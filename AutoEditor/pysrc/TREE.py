@@ -537,6 +537,133 @@ def scrollclipitem(image,video, timein, timeout, start, end,current_path, img_pa
     parameter.append(value)   
 
     return clipitem
+def hpclipitem(image, timein, timeout, start, end,current_path, user):
+    clipitem = Element('clipitem')
+    name = Element('name')
+    name.text= image
+    clipitem.append(name)
+    enabled = Element('enabled')
+    enabled.text= 'true'
+    clipitem.append(enabled)
+    questduration = Element('duration')
+    questduration.text='36000'
+    clipitem.append(questduration)
+    rate = Element('rate')
+    clipitem.append(rate)
+    timebase = Element('timebase')
+    timebase.text= '30'
+    rate.append(timebase) 
+    ntsc = Element('ntsc')
+    ntsc.text= 'true'
+    rate.append(ntsc)
+    tin = Element('in')
+    tin.text= timein
+    clipitem.append(tin)
+    tout = Element('out')
+    alphatype = Element('alphatype')
+    alphatype.text= 'straight'
+    clipitem.append(alphatype)
+    tout.text= timeout
+    clipitem.append(tout)
+    st = Element('start')
+    st.text= start
+    clipitem.append(st)
+    en = Element('end')
+    en.text= end
+    clipitem.append(en)
+    file = Element('file')
+    file.attrib['id']= image
+    clipitem.append(file)
+
+    name = Element('name')
+    name.text= image
+    file.append(name)
+    pathurl = Element('pathurl')
+    if user == 'matsuri':
+        pathurl.text= current_path+"\\"+r"pysrc\heropower\japan"+"\\"+image
+    else:
+        pathurl.text= current_path+"\\"+r"pysrc\heropower"+"\\"+image
+    file.append(pathurl)
+    media = Element('media')
+    file.append(media)
+    vi = Element('video')
+    media.append(vi)
+    samplecharacteristics = Element('samplecharacteristics')
+    vi.append(samplecharacteristics)
+    width = Element('width')
+    width.text= '450'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text= '800'
+    samplecharacteristics.append(height)    
+    anamorphic = Element('anamorphic')
+    anamorphic.text= 'false'
+    samplecharacteristics.append(anamorphic)    
+    pixelaspectratio = Element('pixelaspectratio')
+    pixelaspectratio.text= 'square'
+    samplecharacteristics.append(pixelaspectratio)    
+    fielddominance = Element('fielddominance')
+    fielddominance.text= 'none'
+    samplecharacteristics.append(fielddominance)    
+
+    filter = Element('filter')
+    clipitem.append(filter)
+    effect = Element('effect')
+    filter.append(effect)
+    filtername = Element('name')
+    filtername.text= 'Basic Motion'
+    effect.append(filtername)    
+    effectid = Element('effectid')
+    effectid.text= 'basic'
+    effect.append(effectid)    
+    effectcategory = Element('effectcategory')
+    effectcategory.text= 'motion'
+    effect.append(effectcategory)    
+    effecttype = Element('effecttype')
+    effecttype.text= 'motion'
+    effect.append(effecttype)    
+    mediatype = Element('mediatype')
+    mediatype.text= 'video'
+    effect.append(mediatype)    
+    pproBypass = Element('pproBypass')
+    pproBypass.text= 'false'
+    effect.append(pproBypass)    
+
+    parameter = Element('parameter')
+    parameter.attrib['authoringApp']= "PremierePro"
+    effect.append(parameter)
+    parameterid = Element('parameterid')
+    parameterid.text= 'center'
+    parameter.append(parameterid)    
+    parametername = Element('name')
+    parametername.text= 'Center'
+    parameter.append(parametername)    
+    value = Element('value')
+    parameter.append(value)    
+    horiz = Element('horiz')
+    horiz.text= '1.65'
+    value.append(horiz)   
+    vert = Element('vert')
+    vert.text= '-0.07'
+    value.append(vert)   
+    
+    parameter = Element('parameter')
+    parameter.attrib['authoringApp']= "PremierePro"
+    effect.append(parameter)
+    parameterid = Element('parameterid')
+    parameterid.text= 'rotation'
+    parameter.append(parameterid)    
+    valuemin = Element('valuemin')
+    valuemin.text= '-8640'
+    parameter.append(valuemin)        
+    valuemax = Element('valuemax')
+    valuemax.text= '8640'
+    parameter.append(valuemax)   
+    value = Element('value')
+    value.text= '1'
+    parameter.append(value)   
+
+    return clipitem
 def soundeffectclipitem(efsoundfile, timein, timeout, start, end, efsoundfile_path, length):
     clipitem = Element('clipitem')
     name = Element('name')
@@ -739,11 +866,13 @@ def run_tree(
     end_index_frame,
     quest_start,
     quest_end,
-    quest_bool
+    quest_bool,
+    heropower
     ):
     videopy = VideoFileClip(current_path + "/inputvideo/" + video)
     total_duration = videopy.end * fr
     scroll_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'scroll.png'
+    hpbackup_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'hpbackup.png'
     xmeml = Element('xmeml')
     xmeml.attrib['version']='5'
 
@@ -901,6 +1030,40 @@ def run_tree(
 
     user = who(video)
     print('user: ' + user)
+    if heropower:
+        clipscroll = scrollclipitem(
+            'hpbackup.png',
+            video, 
+            str(end_index_frame[0] - start_index_frame[0]+ 120), 
+            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
+            str(end_index_frame[0] - start_index_frame[0]+ 120), 
+            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
+            current_path,
+            hpbackup_path
+            )
+        trackscroll.append(clipscroll)
+        clipheropower = hpclipitem(
+            heropower,
+            str(end_index_frame[0] - start_index_frame[0]+ 120), 
+            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
+            str(end_index_frame[0] - start_index_frame[0]+ 120), 
+            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
+            current_path,
+            user
+            )
+        trackquest.append(clipheropower)
+        soundeffect = soundeffectclipitem(
+            'huk.mp3',
+            '0',
+            '60',
+            str(end_index_frame[0] - start_index_frame[0] + 115),
+            str(end_index_frame[0] - start_index_frame[0] + 165),
+            current_path + r'\pysrc\wav_src\huk.mp3',
+            '60'
+        )
+        trackefsound.append(soundeffect)
+
+
     if user == 'beterbabbit':
         beterbabbit_bgm1 = bgmclipitem(
             'BETERBABBIT_BGM.mp3',

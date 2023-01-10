@@ -4,8 +4,9 @@ import sys
 from moviepy.editor import VideoFileClip
 sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from pysrc.user_discrimination import who
+import random
 
-def videoclipitem(video, timein, timeout, start, end, videoend, linknumber, current_path):
+def videoclipitem(video, timein, timeout, start, end, videoend, linknumber, videopath):
     clipitem = Element('clipitem')
     name = Element('name')
     name.text= video
@@ -40,7 +41,7 @@ def videoclipitem(video, timein, timeout, start, end, videoend, linknumber, curr
     name.text= video
     file.append(name)
     pathurl = Element('pathurl')
-    pathurl.text= current_path+"\\"+"inputvideo"+"\\"+video
+    pathurl.text= videopath
     file.append(pathurl)
     media = Element('media')
     file.append(media)
@@ -967,7 +968,7 @@ def run_tree(
             str(end), 
             str(total_duration), 
             str(j),
-            current_path
+            current_path+"\\"+"inputvideo"+"\\"+video
             )
         track1.append(clip1)
 
@@ -1062,6 +1063,47 @@ def run_tree(
             '60'
         )
         trackefsound.append(soundeffect)
+    
+    if user == 'matsuri':
+        rand1_3 =  random.randint(1,3)
+        print(rand1_3)
+        outro_duration = 900
+        outro_end = end + outro_duration
+        outrovideo = 'matsuri_outro0'+ str(rand1_3) +'.mp4'
+        print(outrovideo)
+        outrovideo_path = os.path.join(current_path, 'pysrc')
+        outrovideo_path = os.path.join(outrovideo_path, 'video_src')
+        outrovideo_path = os.path.join(outrovideo_path, user)
+        
+        clip1 = videoclipitem(
+            outrovideo, 
+            str(0), 
+            str(outro_duration), 
+            str(end), 
+            str(outro_end), 
+            str(outro_end), 
+            str(len(start_index_frame)),
+            outrovideo_path + '\\' + outrovideo
+            )
+        track1.append(clip1)
+
+        clip2 = audioclipitem1(
+            outrovideo,
+            str(0), 
+            str(outro_duration), 
+            str(end), 
+            str(outro_end), 
+        )
+        track2.append(clip2)
+
+        clip3 = audioclipitem2(
+            outrovideo,
+            str(0), 
+            str(outro_duration), 
+            str(end), 
+            str(outro_end), 
+        )
+        track3.append(clip3)
 
 
     if user == 'beterbabbit':
@@ -1200,7 +1242,7 @@ def run_dissolve_all(
         '-1', 
         str(total_duration), 
         str(0),
-        current_path
+        current_path+"\\"+"inputvideo"+"\\"+video
         )
     track1.append(clip1)
     clip1 = videotransitionitem(end[0], video_dissolve_duration)
@@ -1234,7 +1276,7 @@ def run_dissolve_all(
             '-1', 
             str(total_duration), 
             str(j),
-            current_path
+            current_path+"\\"+"inputvideo"+"\\"+video
             )
         track1.append(clip1)
 
@@ -1249,7 +1291,7 @@ def run_dissolve_all(
             '-1', 
             str(total_duration), 
             str(j),
-            current_path
+            current_path+"\\"+"inputvideo"+"\\"+video
             )
         track1.append(clip1)
 
@@ -1304,7 +1346,7 @@ def run_dissolve_all(
         str(end[len(start)-1]), 
         str(total_duration), 
         str(0),
-        current_path
+        current_path+"\\"+"inputvideo"+"\\"+video
         )
     track1.append(clip1)
     clip2 = audiotransitionitem(start[len(start)-1], audio_dissolve_duration)

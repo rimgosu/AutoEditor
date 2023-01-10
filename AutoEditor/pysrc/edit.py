@@ -57,7 +57,7 @@ def run_autoPremiere(
     exposition2 = (1858,988)
     premiere_path = r'C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe'
     xml_path = current_path + r"\inputvideo\xmlcache" +"\\" + video[:-4] + '.xml'
-    ex_file = ex +  '\\' + video[:-4] + "edited.mp4"
+    ex_file = ex +  '\\' + video[:-4] + "_edited.mp4"
     ex_file.replace("/", "\\")
     print(ex_file)
     if os.path.exists(ex_file):
@@ -129,12 +129,37 @@ def run_autoPremiere(
     pyautogui.click(exposition2)
     scr_path = current_path + "/yolov5/data/encodingimage/"
     scr_detect('encoding', current_path, scr_path, 'models/encoding.pt', 'runs/edetect')
-    kill_process("Adobe Premiere Pro.exe")     
+    kill_process("Adobe Premiere Pro.exe")   
+
+def after_treatment(inputvideo_path, exportvideo_path):
+    onemorevideo = []
+    inputvideos = os.listdir(inputvideo_path)
+    inputvideos = [file for file in inputvideos if file.endswith(".mp4")]
+    exportvideos = os.listdir(exportvideo_path)
+    exportvideos = [file for file in exportvideos if file.endswith(".mp4")]
+
+    print(inputvideos)
+    print(exportvideos)
+
+    for x in inputvideos:
+        v = x[:-4] + '_edited.mp4'
+        print(v)
+        if v in exportvideos:
+            pass
+        else:
+            onemorevideo.append(x)
+
+    print(onemorevideo)
+
+    for x in onemorevideo:
+        run_autoPremiere(current_path, x, exportvideo_path)
 
 if __name__=="__main__":
     current_path = os.path.dirname(__file__)
     current_path = os.path.join(current_path, os.pardir)
+    inputvideo_path = os.path.join(current_path, 'inputvideo')
+    exportvideo_path = os.path.join(inputvideo_path, 'export')
     video_list = os.listdir(current_path + "/inputvideo/")
     video_list = [file for file in video_list if file.endswith(".mp4")]
     export_path = current_path + r'\inputvideo\export'
-    run_autoPremiere(current_path,video_list[0],export_path)
+    after_treatment(inputvideo_path, exportvideo_path)

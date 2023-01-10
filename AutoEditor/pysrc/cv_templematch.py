@@ -1,13 +1,58 @@
 import cv2
 import os
-def vidoescreenshot(video, target_time, output_path):
+from moviepy.editor import VideoFileClip 
+import math
+from tqdm import tqdm
+import sys
+sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
+from pysrc.user_discrimination import who
+
+def set_list_sort(index):
+    index = set(index)
+    index = list(index)
+    index.sort()
+    return index
+def index_exapnd(input_index, minus_constant, plus_constant):
+    output_index = []
+    for j in input_index:
+        for k in range(-minus_constant, plus_constant):
+            output_index.append(j+k)
+    return output_index
+def start_end(index, threshold=1):
+    return_index = []
+    return_index.append(index[0])
+    return_index.append(index[len(index)-1])
+    for j in range(len(index)-1):
+        if index[j+1] - index[j] <= threshold:
+            pass
+        else:
+            return_index.append(index[j])
+            return_index.append(index[j+1])
+    return_index = set_list_sort(return_index)
+    return return_index
+def shrink_index(index, minus_constant, plus_constant):
+    idx = []
+    for j in range(len(index)):
+        if j % 2 == 0:
+            idx.append(index[j]+plus_constant)
+        else:
+            idx.append(index[j]-minus_constant)
+    idx = set_list_sort(idx)
+    return idx
+
+def DeleteAllFiles(filePath):
+    if os.path.exists(filePath):
+        for file in os.scandir(filePath):
+            os.remove(file.path)
+        return 'Remove All File'
+    else:
+        return 'Directory Not Found'
+
+def vidoescreenshot(video, target_time, output_path, x=975,y=700,w=300,h=300):
     videocv = cv2.VideoCapture(video)
 
     # Set the target time for the screenshot
     time = target_time  # in seconds
-    x = 975
-    y = 700
-    w, h = 300, 300
 
     # Set the video to the target time
     videocv.set(cv2.CAP_PROP_POS_MSEC, time*1000)
@@ -20,7 +65,7 @@ def vidoescreenshot(video, target_time, output_path):
         frame = frame[y:y+h, x:x+w]
 
         # Save the screenshot
-        cv2.imwrite(output_path + "/hpcheck.png", frame)
+        cv2.imwrite(output_path, frame)
 
     # Release the video capture object
     videocv.release()
@@ -44,10 +89,22 @@ def matchimage(capture_image, target_hpimage, threshold):
     bottom_right = (top_left[0] + w, top_left[1] + h)
     if max_val > threshold:
         print(min_val, max_val)
-        print(target_hpimage)
         matched = os.path.basename(target_hpimage)
-        print(matched)
         return matched
+
+def guess_battles(detect_list, num=10):
+    battles = []
+    print(detect_list)
+    for j in range(len(detect_list)-num):
+        summ = 0
+        for k in range(j, j+num):
+            summ += detect_list[k]
+        if summ == 0:
+            for k in range(j, j+num):
+                battles.append(k)
+    battles = set_list_sort(battles)
+    return battles
+
 def find_heropower(video, video_second):
     current_path = os.path.join(os.path.dirname(__file__), os.pardir)
     inputvideo_path = os.path.join(current_path, 'inputvideo')
@@ -63,7 +120,7 @@ def find_heropower(video, video_second):
     hptest = True
     hpindex = 0
     while hptest:
-        vidoescreenshot(inputvideo, time + hpindex, hptemp_path)
+        vidoescreenshot(inputvideo, time + hpindex, hptemp_path + "/hpcheck.png")
         for i in hpimg_list:
             target = "\\"+ i
             cutsave_path = hptemp_path + target[:-4] + "_cut.png"
@@ -83,7 +140,40 @@ def find_heropower(video, video_second):
 
     matched = matched[:-8] + '.png'
     return matched
+def find_battles_second(video, screenshot = True):
+    current_path = os.path.join(os.path.dirname(__file__), os.pardir)
+    inputvideo_path = os.path.join(current_path, 'inputvideo')
+    inputvideo = os.path.join(inputvideo_path, video)
+    videopy = VideoFileClip(inputvideo)
+    total_duration = math.floor(videopy.end)
+
+    battleimg = os.path.join(current_path, 'pysrc')
+    battleimg = os.path.join(battleimg, 'image_src')
+    battleimg = os.path.join(battleimg, 'battleimg')
+    videocapture_path = os.path.join(battleimg, 'videocapture')
+    battle_index = []
+    if screenshot:
+        DeleteAllFiles(videocapture_path)
+    for i in range(total_duration):
+        if screenshot:
+            vidoescreenshot(inputvideo, i, videocapture_path + '/' + str(i) + '.png', x=1481,y=456,w=150,h=75)
+        matched = matchimage(battleimg + "/battlekr.png", videocapture_path + '/' + str(i) + '.png', threshold=0.90)
+        if matched is None:
+            matched = matchimage(battleimg + "/battlejp.png", videocapture_path + '/' + str(i) + '.png', threshold=0.90)
+        if matched is None:
+            matched = matchimage(battleimg + "/battle.png", videocapture_path + '/' + str(i) + '.png', threshold=0.90)
+
+        if matched:
+            battle_index.append(i)
+        print(str(i) +':', matched)
+    
+    battle_index = index_exapnd(battle_index, 15, 15)
+    battle_index = set_list_sort(battle_index)
+    battle_index = start_end(battle_index)
+    battle_index = shrink_index(battle_index, plus_constant=12, minus_constant=14)
+    print(battle_index)
+    return battle_index
 
 if __name__ == "__main__":
-    m = find_heropower('mumuri.mp4', 5)
-    print(m)
+    find_battles_second('rimgosu std.mp4')
+    pass

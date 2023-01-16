@@ -53,7 +53,7 @@ def run_autoPremiere(
     video,
     ex
 ):
-    exposition1 = (508,202)
+    exposition1 = (445,202)
     exposition2 = (1858,988)
     premiere_path = r'C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe'
     xml_path = current_path + r"\inputvideo\xmlcache" +"\\" + video[:-4] + '.xml'
@@ -131,7 +131,7 @@ def run_autoPremiere(
     scr_detect('encoding', current_path, scr_path, 'models/encoding.pt', 'runs/edetect')
     kill_process("Adobe Premiere Pro.exe")   
 
-def after_treatment(inputvideo_path, exportvideo_path):
+def after_treatment(inputvideo_path, exportvideo_path, current_path):
     onemorevideo = []
     inputvideos = os.listdir(inputvideo_path)
     inputvideos = [file for file in inputvideos if file.endswith(".mp4")]
@@ -162,4 +162,4 @@ if __name__=="__main__":
     video_list = os.listdir(current_path + "/inputvideo/")
     video_list = [file for file in video_list if file.endswith(".mp4")]
     export_path = current_path + r'\inputvideo\export'
-    after_treatment(inputvideo_path, exportvideo_path)
+    after_treatment(inputvideo_path, exportvideo_path, current_path)

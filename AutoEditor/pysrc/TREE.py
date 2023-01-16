@@ -861,6 +861,8 @@ def bgmclipitem(bgmsoundfile, timein, timeout, start, end, bgmsoundfile_path, le
 
 def run_tree(
     current_path,
+    input_path,
+    exf_path,
     video,
     fr,
     start_index_frame,
@@ -870,12 +872,14 @@ def run_tree(
     quest_bool,
     heropower
     ):
-    videopy = VideoFileClip(current_path + "/inputvideo/" + video)
+    videopy = VideoFileClip(input_path + "/" + video)
     total_duration = videopy.end * fr
     scroll_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'scroll.png'
     hpbackup_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'hpbackup.png'
     xmeml = Element('xmeml')
     xmeml.attrib['version']='5'
+
+    print('here')
 
     sequence = Element('sequence')
     sequence.attrib['id']="video"
@@ -957,6 +961,8 @@ def run_tree(
     trackefsound = Element('track')
     audio.append(trackefsound)
 
+    print('inputvideopath', input_path)
+
     start = 0
     end = end_index_frame[0] - start_index_frame[0]
     for j in range(len(start_index_frame)):
@@ -968,7 +974,7 @@ def run_tree(
             str(end), 
             str(total_duration), 
             str(j),
-            current_path+"\\"+"inputvideo"+"\\"+video
+            input_path+"\\"+video
             )
         track1.append(clip1)
 

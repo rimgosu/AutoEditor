@@ -140,9 +140,8 @@ def find_heropower(video, video_second):
 
     matched = matched[:-8] + '.png'
     return matched
-def find_battles_second(video, screenshot = True):
+def find_battles_second(video, inputvideo_path, screenshot = True):
     current_path = os.path.join(os.path.dirname(__file__), os.pardir)
-    inputvideo_path = os.path.join(current_path, 'inputvideo')
     inputvideo = os.path.join(inputvideo_path, video)
     videopy = VideoFileClip(inputvideo)
     total_duration = math.floor(videopy.end)
@@ -174,6 +173,42 @@ def find_battles_second(video, screenshot = True):
     print(battle_index)
     return battle_index
 
+def newminion_detect(video, inputvideo_path, second, patchday='_230118', imagecut_init = True):
+    current_path = os.path.join(os.path.dirname(__file__), os.pardir)
+    
+    forcuts_path = os.path.join(current_path, 'pysrc')
+    forcuts_path = os.path.join(forcuts_path, 'newminion')
+    forcuts_path = os.path.join(forcuts_path, patchday)
+    forcuts_path = os.path.join(forcuts_path, 'forcuts')
+    forcuts_images = os.listdir(forcuts_path)
+    forcuts_images = [file for file in forcuts_images if file.endswith(".png")]
+
+    inputvideo = os.path.join(inputvideo_path, video)
+    videocapture_path = os.path.join(current_path, 'pysrc')
+    videocapture_path = os.path.join(videocapture_path, 'newminion')
+    videocapture_path = os.path.join(videocapture_path, patchday)
+    videocapture_path = os.path.join(videocapture_path, 'screenshot_temp')
+
+    cut_completed_path = os.path.join(current_path, 'pysrc')
+    cut_completed_path = os.path.join(cut_completed_path, 'newminion')
+    cut_completed_path = os.path.join(cut_completed_path, patchday)
+    cut_completed_path = os.path.join(cut_completed_path, 'cut_completed')
+
+    print('forcuts_images:', forcuts_images)
+
+    vidoescreenshot(inputvideo, second, videocapture_path + '/screenshot.png', x=479,y=322,w=969,h=372)
+    if imagecut_init:
+        for x in forcuts_images:
+            cut_img = cut_image(forcuts_path + '/' + x, m1=[104,101], m2=[256,257], mul=0.54)
+            cv2.imwrite(cut_completed_path + '/' + x, cut_img)
+    for x in forcuts_images:
+        matched = matchimage(videocapture_path + '/screenshot.png', cut_completed_path + '/' + x, threshold=0.65)
+        print(matched)
+
 if __name__ == "__main__":
-    find_battles_second('rimgosu std.mp4')
+    # find_battles_second('rimgosu std.mp4')
+    video = 'rimgosu yogg.mp4'
+    inputvideo_path = r'C:\Users\rimgosu\Desktop\ShareFolder\git\AutoEditor\inputvideo'
+    second = 1537
+    newminion_detect(video, inputvideo_path, second)
     pass

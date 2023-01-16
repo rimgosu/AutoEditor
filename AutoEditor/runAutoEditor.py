@@ -59,6 +59,7 @@ from pysrc.audio_analysis import *
 from pysrc.screenshot_bgremove import *
 from pysrc.sendemail import *
 from pysrc.cv_templematch import *
+from pysrc.user_discrimination import *
 def framerate_resolution_change(inputvideo_path, outputvideo_path, framerate, res):
     if os.path.isfile(outputvideo_path):
         pass
@@ -136,7 +137,8 @@ def index_exapnd(input_index, minus_constant, plus_constant):
 def run_autoEditor(
     current_path,
     video_list,
-    exp_path,
+    input_path,
+    exf_path,
     framerate=3,
     res=1/3,
     FRchange=False,
@@ -154,17 +156,19 @@ def run_autoEditor(
     frameend = []
     wav_path = []
     for i in range(len(video_list)):
-        inputvideo_path.append(current_path+"/inputvideo/" + video_list[i])
+        inputvideo_path.append(input_path + "/" + video_list[i])
         wav_path.append(current_path+"/pysrc/wav/" + video_list[i][:-4] + ".wav")
         FRvideo_path.append(current_path+"/yolov5/data/videos/" + str(framerate) + "f" + str(resolution) + "r" + video_list[i])
         FRtext_path.append(
             current_path+"/yolov5/runs/detect/exp/labels/" + str(framerate) + "f" + str(resolution) + "r" + video_list[i][:-4]
             )
-        videopy.append(VideoFileClip(current_path+"/inputvideo/" + video_list[i]))
+        videopy.append(VideoFileClip(input_path + "/" + video_list[i]))
         frameend.append(math.floor(videopy[i].end * framerate))
 
     print('FRtext_path')
     print(FRtext_path)
+    print('video_list')
+    print(video_list)
 
     # 1. framerate change
     if FRchange:
@@ -207,8 +211,8 @@ def run_autoEditor(
 
     # remove exp_path 
     if Premiere:
-        if os.path.exists(exp_path):
-            DeleteAllFiles(exp_path)
+        if os.path.exists(exf_path):
+            DeleteAllFiles(exf_path)
 
     indexes = True
     if indexes:
@@ -343,6 +347,7 @@ def run_autoEditor(
         end_index = [[0 for x in range(0)] for y in range(len(video_list))]
         speak_threshold = []
         speak_threshold_star = []
+        speak_threshold_startend = []
         audio = [[0 for x in range(0)] for y in range(len(video_list))]
         audio_speak_index = [[0 for x in range(0)] for y in range(len(video_list))]
         adjusted_start_index1 = [[0 for x in range(0)] for y in range(len(video_list))]
@@ -368,6 +373,8 @@ def run_autoEditor(
 
     for i in range(len(video_list)):
         try:
+            user = who(video_list[i])
+            print('user:', user)
             # check list length
             gamestart = check_listlength(gamestart, i)
             gameend = check_listlength(gameend, i)
@@ -377,6 +384,7 @@ def run_autoEditor(
             speak_threshold_star = check_listlength(speak_threshold_star, i)
             quest_start_frame = check_listlength(quest_start_frame, i)
             quest_end_frame = check_listlength(quest_end_frame, i)
+            speak_threshold_startend = check_listlength(speak_threshold_startend, i)
             for j in range(len(yolo_list[i])):
                 for k in range(len(yolo_list[i][j])):
                     if yolo_list[i][j][k][0] != '-' and yolo_list[i][j][k][0] != '2' \
@@ -436,7 +444,11 @@ def run_autoEditor(
                         # 상점 하수인 몽땅
                         elif 0.36 < float(yolo_list[i][j][k][2]) < 0.41 and \
                             0.054 < float(yolo_list[i][j][k][3]) < 0.07 and 0.12 < float(yolo_list[i][j][k][4]) < 0.155:
-                            pass
+                            if user == 'matsuri':
+                                pass
+                            else:
+                                EMOVE_INDEX[i].append(j)
+                                EMOVE_INDEX[i].sort()             
                         else:
                             EMOVE_INDEX[i].append(j)
                             EMOVE_INDEX[i].sort()
@@ -468,10 +480,10 @@ def run_autoEditor(
                     if yolo_list[i][j][k][0] == '9' and float(yolo_list[i][j][k][5]) > 0.90:
                         EMOVE_INDEX[i].append(j)
                         EMOVE_INDEX[i].sort()
-                    if yolo_list[i][j][k][0] == '10'and float(yolo_list[i][j][k][5]) > 0.80:
+                    if yolo_list[i][j][k][0] == '10' and float(yolo_list[i][j][k][5]) > 0.80:
                         EMOVE_INDEX[i].append(j)
                         EMOVE_INDEX[i].sort()
-                    if yolo_list[i][j][k][0] == '11'and float(yolo_list[i][j][k][5]) > 0.80:
+                    if yolo_list[i][j][k][0] == '11' and float(yolo_list[i][j][k][5]) > 0.80:
                         buffnumber[i].append(j)
                         buffnumber[i].sort()
                         EMOVE_INDEX[i].append(j)
@@ -716,21 +728,23 @@ def run_autoEditor(
             print("ES_index")
             print(ES_index)
 
-            if len(BS_index) + 1 == len(ES_index):
+            if len(BS_index[i]) + 1 == len(ES_index[i]):
                 pass
             else: 
                 BS_expand = index_exapnd(BS_index[i], 10 * framerate, 10 * framerate)
                 ES_expand = index_exapnd(ES_index[i], 10 * framerate, 10 * framerate)
-                cvBE_index = find_battles_second(video_list[i], screenshot)
+                cvBE_index = find_battles_second(video_list[i],input_path , screenshot)
                 cvBE_index = [j*framerate for j in cvBE_index]
                 print('cvBE_index', cvBE_index)
                 for j in range(len(cvBE_index)):
                     if j % 2 == 0:
                         if not cvBE_index[j] in BS_expand:
                             BS_index[i].append(cvBE_index[j])
+                            BS_index[i] = set_list_sort(BS_index[i])
                     else:
                         if not cvBE_index[j] in ES_expand:
                             ES_index[i].append(cvBE_index[j])
+                            ES_index[i] = set_list_sort(ES_index[i])
 
             print("BS_index_modified")
             print(BS_index)
@@ -1132,17 +1146,43 @@ def run_autoEditor(
             employ: 1턴 / 2턴 삭제
             battle: 1턴 / 2턴 / 3턴 / 4턴 스킵
             """
+            # 6-3-0. find heropower
+            gamestart_second = gamestart[i] / framerate
+            heropower = find_heropower(video_list[i], gamestart_second)
+            print('heropower:', heropower)
+            hero = what_hero(heropower)
+
             # 6-3-1. early point
-            for j in range(ES_index[i][0]-EALRY_POINT_THRESHOLD, ES_index[i][1]):
-                early_point1[i].append(j)
-            for j in range(ES_index[i][1], ES_index[i][2]):
-                early_point2[i].append(j)
+            # 1턴
+            if hero == '_0_':
+                if len(star_house_index[0]) != 0:
+                    for j in range(BS_index[i][0], max(star_house_index[0])-STAR_MINUS_THRESHOLD):
+                        early_point3[i].append(j)
+                else:
+                    for j in range(BS_index[i][0], ES_index[i][1]):
+                        early_point3[i].append(j)
+            else:
+                for j in range(ES_index[i][0]-EALRY_POINT_THRESHOLD, ES_index[i][1]):
+                    early_point1[i].append(j)
+            # 2턴
+            if hero == '_0_' or hero == '_1_':
+                if len(star_house_index[1]) != 0:
+                    for j in range(BS_index[i][1], max(star_house_index[1])-STAR_MINUS_THRESHOLD):
+                        early_point3[i].append(j)
+                else:
+                    for j in range(BS_index[i][1], ES_index[i][2]):
+                        early_point3[i].append(j)
+            else:
+                for j in range(ES_index[i][1], ES_index[i][2]):
+                    early_point2[i].append(j)
+            # 3턴
             if len(star_house_index[2]) != 0:
                 for j in range(BS_index[i][2], max(star_house_index[2])-STAR_MINUS_THRESHOLD):
                     early_point3[i].append(j)
             else:
                 for j in range(BS_index[i][2], ES_index[i][3]):
                     early_point3[i].append(j)
+            # 4턴
             if len(star_house_index[3]) != 0:
                 for j in range(BS_index[i][3], max(star_house_index[3])-STAR_MINUS_THRESHOLD):
                     early_point4[i].append(j)
@@ -1151,6 +1191,7 @@ def run_autoEditor(
                     early_point4[i].append(j)
 
             # 6-3-2. early point remove
+
             SCENE_INDEX[i] = index_remove(SCENE_INDEX[i], early_point1[i])
             SCENE_INDEX[i] = index_remove(SCENE_INDEX[i], early_point2[i])
             SCENE_INDEX[i] = index_remove(SCENE_INDEX[i], early_point3[i])
@@ -1224,25 +1265,29 @@ def run_autoEditor(
                         break
                 if breaker == True:
                     break
-            
-            user = who(video_list[i])
+                
             quest_bool = False
             if user != 'seseisei':
                 quest_detect_sum = 0
+                idx = 0
                 while True:
-                    detect_quest(current_path + '/inputvideo/' + video_list[i], quest_select, current_path + '/pysrc/quest/', user)
+                    detect_quest(input_path + "/" + video_list[i], quest_select, current_path + '/pysrc/quest/', user)
                     quest_label = os.listdir(current_path + '/yolov5/runs/qdetect/exp/labels/')
                     quest_select += 0.25 # 0.25초 마다 한 번
                     print("quest_select")
                     print(quest_select)
                     print('quest_label')
                     print(quest_label)
-                    quest_detect_sum += 1
+                    idx += 1
+                    if idx % 2 == 0:
+                        quest_detect_sum += idx
+                    else:
+                        quest_detect_sum -= idx
                     if len(quest_label) == 1:
                         quest_bool = True
                         email_attatched.append(video_list[i] + ' quest_labeling done')
                         break
-                    if quest_detect_sum == framerate * 16:
+                    if quest_detect_sum == framerate * 20:
                         quest_bool = False
                         email_attatched.append(video_list[i] + ' quest_labeling failed')
                         break
@@ -1311,37 +1356,39 @@ def run_autoEditor(
             audio_copy.sort()
             print(audio_copy)
             speak_threshold.append(audio_copy[int(len(audio_copy)/1.3)])
-            if user == 'rimgosu':
+            if user == 'rimgosu' or user == 'duckdragon':
                 speak_threshold_star.append(audio_copy[int(len(audio_copy)/1.1)])
             elif user == 'matsuri':
                 speak_threshold_star.append(audio_copy[int(len(audio_copy)/1.02)])
             print(speak_threshold)
-
+            speak_threshold_startend.append(audio_copy[int(len(audio_copy)/1.05)])
             print("speak_threshold[i]")
             print(speak_threshold[i])
             print("speak_threshold_star[i]")
             print(speak_threshold_star[i])
+            print('start_End_threshod', speak_threshold_startend)
 
             # 9-2. speak adjust
             for j in range(len(audio[i])):
                 if j in star_index[i]:
                     if audio[i][j] > speak_threshold_star[i]:
                         audio_speak_index[i].append(j)
+                elif gamestart[i] - 10 * framerate < j < gamestart[i] + 10 * framerate:
+                    if audio[i][j] > speak_threshold_startend[i]:
+                        audio_speak_index[i].append(j)
+                elif gameend[i] - 10 * framerate < j < gameend[i] + 10 * framerate:
+                    if audio[i][j] > speak_threshold_startend[i]:
+                        audio_speak_index[i].append(j)
                 else:
                     if audio[i][j] > speak_threshold[i]:
                         audio_speak_index[i].append(j)
+
+            print('audio_speak_index', audio_speak_index)
+            
 
             for j in range(len(start_index[i])):
-                    while start_index[i][j] in audio_speak_index[i]:
-                        start_index[i][j] -= 1
-
-            for j in range(len(audio[i])):
-                if j in star_index[i]:
-                    if audio[i][j] > speak_threshold_star[i]:
-                        audio_speak_index[i].append(j)
-                else:
-                    if audio[i][j] > speak_threshold[i]:
-                        audio_speak_index[i].append(j)                
+                while start_index[i][j] in audio_speak_index[i]:
+                    start_index[i][j] -= 1       
 
             for j in range(len(end_index[i])):
                     while end_index[i][j] in audio_speak_index[i]:
@@ -1410,12 +1457,12 @@ def run_autoEditor(
             print(quest_end_frame[i])
 
             # 10. export xml
-            gamestart_second = gamestart[i] / framerate
-            heropower = find_heropower(video_list[i], gamestart_second)
             print(heropower)
             if changeXml:
                 run_tree(
-                    current_path, 
+                    current_path,
+                    input_path,
+                    exf_path,
                     video_list[i], 
                     60, 
                     start_index_frame[i], 
@@ -1428,23 +1475,17 @@ def run_autoEditor(
 
             # 11. xml to encoding
             if Premiere:
-
-                run_autoPremiere(current_path, video_list[i], exp_path)
-
+                run_autoPremiere(current_path, video_list[i], exf_path)
 
             # 12. done - email inform!
             email_attatched.append(video_list[i] + ' done!')
-        
         except:
-            email_attatched.append(video_list[i] + ' fail!')
-            pass
+            email_attatched.append(video_list[i] + ' failed!')
     
     if Premiere:
-        inputvideo_pathpr = os.path.join(current_path, 'inputvideo')
-        exportvideo_pathpr = os.path.join(inputvideo_pathpr, 'export')
-        after_treatment(inputvideo_pathpr, exportvideo_pathpr)
-        after_treatment(inputvideo_pathpr, exportvideo_pathpr)
-        after_treatment(inputvideo_pathpr, exportvideo_pathpr)
+        after_treatment(input_path, exf_path, current_path)
+        after_treatment(input_path, exf_path, current_path)
+        after_treatment(input_path, exf_path, current_path)
 
     send_email(email_attatched)
 
@@ -1454,22 +1495,23 @@ def run_autoEditor(
 
 if __name__=="__main__":
     current_path = os.path.dirname(__file__)
-    print(current_path)
-    video_list = os.listdir(current_path + "/inputvideo/")
+    input_path= os.path.join(current_path, 'inputvideo')
+    video_list = os.listdir(input_path)
     video_list = [file for file in video_list if file.endswith(".mp4")]
     print(video_list)
-    exf = os.path.join(current_path, 'inputvideo')
-    exf = os.path.join(exf, 'export')
+    exf_path = os.path.join(current_path, 'inputvideo')
+    exf_path = os.path.join(exf_path, 'export')
     run_autoEditor(    
         current_path,
         video_list,
-        exf,
+        input_path,
+        exf_path,
         framerate=4,
         res=1/3,
-        FRchange=True,
-        yoloDetect=True,
+        FRchange=False,
+        yoloDetect=False,
         changeXml=True,
-        Premiere=True,
+        Premiere=False,
         screenshot=True,
         uploadYotube=False
     )   

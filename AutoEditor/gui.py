@@ -9,11 +9,21 @@ from runAutoEditor import *
 root = Tk()
 root.title("AutoEditor")
 
-def browse_dest_path():
-    global choosed_export
+def browse_inputvideo_path():
     folder_selected = filedialog.askdirectory()
     choosed_export = folder_selected.replace("/", "\\")
-    print(choosed_export)
+    with open(path_temp + r'\inputvideopath.txt', 'w') as f:
+        f.write(choosed_export)
+    if folder_selected == "": # 사용자가 취소를 누를 때
+        print("폴더 선택 취소")
+        return
+    txt_inputvideo_path.delete(0, END)
+    txt_inputvideo_path.insert(0, choosed_export)
+def browse_save_path():
+    folder_selected = filedialog.askdirectory()
+    choosed_export = folder_selected.replace("/", "\\")
+    with open(path_temp + r'\exportvideopath.txt', 'w') as f:
+        f.write(choosed_export)
     if folder_selected == "": # 사용자가 취소를 누를 때
         print("폴더 선택 취소")
         return
@@ -22,6 +32,12 @@ def browse_dest_path():
 def start():
     framerate = int(fr_combo.get())
     res = int(int(res_combo.get())/1920)
+    with open(path_temp + r'\inputvideopath.txt', 'r') as f:
+        input_path = f.read()
+    with open(path_temp + r'\exportvideopath.txt', 'r') as f:
+        exf_path = f.read()
+    video_list = os.listdir(input_path)
+    video_list = [file for file in video_list if file.endswith(".mp4")]
     if FR_combo.get() == 'True':
         FR_bool = True
     else:
@@ -39,53 +55,38 @@ def start():
     else:
         upload_bool = False
 
-    try:
-        current_path = os.path.dirname(__file__)
-        if len(txt_dest_path.get()) == 0:
-            msgbox.showwarning("경고", "저장 경로를 선택하세요")
-            return
-        run_autoEditor(    
-            current_path,
-            video_list,
-            exf,
-            framerate=4,
-            res=1/3,
-            FRchange=False,
-            yoloDetect=False,
-            changeXml=True,
-            Premiere=False,
-            screenshot=False,
-            uploadYotube=False
-        )   
-    except:
-        current_path= os.path.dirname(__file__)
-        choosed_export=os.path.join(current_path,'inputvideo')
-        choosed_export= os.path.join(choosed_export, 'export')
-        run_autoEditor(    
-            current_path,
-            video_list,
-            exf,
-            framerate=4,
-            res=1/3,
-            FRchange=False,
-            yoloDetect=False,
-            changeXml=True,
-            Premiere=False,
-            screenshot=False,
-            uploadYotube=False
-        )   
-
+    run_autoEditor(    
+        current_path,
+        video_list,
+        input_path,
+        exf_path,
+        framerate=framerate,
+        res=1/3,
+        FRchange=FR_bool,
+        yoloDetect=yolo_bool,
+        changeXml=True,
+        Premiere=edit_bool,
+        screenshot=True,
+        uploadYotube=upload_bool
+    )       
 
 current_path = os.path.dirname(__file__)
-input_base_path = os.path.join(current_path, 'inputvideo')
-export_base_path = os.path.join(input_base_path, 'export')
+path_temp = os.path.join(current_path, 'pysrc')
+path_temp = os.path.join(path_temp, 'pathtemp')
+with open(path_temp + r'\inputvideopath.txt', 'r') as f:
+    input_base_path = f.read()
+with open(path_temp + r'\exportvideopath.txt', 'r') as f:
+    export_base_path = f.read()
+
+print('inputbase_Path:', input_base_path)
+print('export_base_path:', export_base_path)
 
 path_frame = LabelFrame(root, text="폴더추가")
 path_frame.pack(fill="x", padx=5, pady=5, ipady=5)
-txt_dest_path = Entry(path_frame)
-txt_dest_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # 높이 변경
-txt_dest_path.insert(END, input_base_path)
-btn_dest_path = Button(path_frame, text="찾아보기", width=10, command=browse_dest_path)
+txt_inputvideo_path = Entry(path_frame)
+txt_inputvideo_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # 높이 변경
+txt_inputvideo_path.insert(END, input_base_path)
+btn_dest_path = Button(path_frame, text="찾아보기", width=10, command=browse_inputvideo_path)
 btn_dest_path.pack(side="right", padx=5, pady=5)
 # 저장 경로 프레임
 path_frame = LabelFrame(root, text="저장경로")
@@ -93,7 +94,7 @@ path_frame.pack(fill="x", padx=5, pady=5, ipady=5)
 txt_dest_path = Entry(path_frame)
 txt_dest_path.pack(side="left", fill="x", expand=True, padx=5, pady=5, ipady=4) # 높이 변경
 txt_dest_path.insert(END, export_base_path)
-btn_dest_path = Button(path_frame, text="찾아보기", width=10, command=browse_dest_path)
+btn_dest_path = Button(path_frame, text="찾아보기", width=10, command=browse_save_path)
 btn_dest_path.pack(side="right", padx=5, pady=5)
 # 옵션 프레임
 frame_option = LabelFrame(root, text="옵션")
@@ -101,7 +102,7 @@ frame_option.pack(padx=5, pady=5, ipady=5)
 #프레임 비교
 lbl_width = Label(frame_option, text="프레임 비교", width=8)
 lbl_width.grid(row=0, column=0,padx=5,pady=5)
-fr_option = [3, 5, 7, 10, 15]
+fr_option = [3, 4, 5, 7, 10, 15]
 fr_combo = ttk.Combobox(frame_option, state="readonly", values=fr_option, width=10)
 fr_combo.current(0)
 fr_combo.grid(row=0, column=1,padx=5,pady=5)

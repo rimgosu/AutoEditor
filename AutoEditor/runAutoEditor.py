@@ -76,6 +76,23 @@ def DeleteAllFiles(filePath):
         return 'Remove All File'
     else:
         return 'Directory Not Found'
+def delete_target(dir, extension):
+    # specify the directory path
+    directory = dir
+
+    # use a for loop to iterate through all files in the directory
+    for filename in os.listdir(directory):
+        # check if the file is an mp4
+        if filename.endswith(extension):
+            # build the full file path
+            file_path = os.path.join(directory, filename)
+            try:
+                # delete the file
+                os.remove(file_path)
+                print(f"{file_path} has been deleted.")
+            except Exception as e:
+                # print the error message if there is an error
+                print(f"Error: {e}")
 def frame_to_second(index, fps):
     index_second = [index[i] / fps for i in range(len(index))]
     return np.round(index_second, 1)
@@ -212,7 +229,7 @@ def run_autoEditor(
     # remove exp_path 
     if Premiere:
         if os.path.exists(exf_path):
-            DeleteAllFiles(exf_path)
+            delete_target(exf_path, '.mp4')
 
     indexes = True
     if indexes:

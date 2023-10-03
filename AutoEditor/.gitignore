@@ -1,6 +1,2 @@
-*.mp4
-*.xml
-*.wav
-*.jpg
-*.txt
-/yolov5/runs/
+/__pycache__/
+/inputvideo/xmlcache/*.xml

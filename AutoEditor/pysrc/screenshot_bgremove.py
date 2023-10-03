@@ -7,7 +7,7 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from yolov5.detect_quest import * 
 
 def what_quest(video, target_time, output_path, user):
-    if user == 'rimgosu' or user == 'matsuri' or user == 'xqn' or user == 'duckdragon':
+    if user == 'rimgosu' or user == 'matsuri' or user == 'shadybunny' or user == 'duckdragon':
         # Open the video file
         videocv = cv2.VideoCapture(video)
 

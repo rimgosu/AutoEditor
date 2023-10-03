@@ -6,6 +6,29 @@ sys.path.append(os.path.dirname(os.path.abspath(os.path.dirname(__file__))))
 from pysrc.user_discrimination import who
 import random
 
+def in_to_start(
+    videoin_frame, # start_index_frame 
+    videoout_frame, # end_index_frame
+    target
+    ):
+    start = 0
+    end = int(videoout_frame[0] - videoin_frame[0])
+    print('start','end', start, end)
+    for x in range(1, len(videoin_frame)):
+        start = end
+        end = int(videoout_frame[x] - videoin_frame[x] + start)
+        print('start','end', start, end)
+        print(videoout_frame[x], videoin_frame[x])
+        if videoin_frame[x] <= target <= videoout_frame[x]:
+            target_start = target - videoin_frame[x] + start
+            print('target_start:', target_start)
+            break
+        elif videoout_frame[x] <= target <= videoin_frame[x+1]:
+            target_start = end
+            print('target_start:', target_start)
+            break
+    return target_start
+
 def videoclipitem(video, timein, timeout, start, end, videoend, linknumber, videopath):
     clipitem = Element('clipitem')
     name = Element('name')
@@ -290,132 +313,7 @@ def audiotransitionitem(centerframe, duration):
     reverse.text='FALSE'
     effect.append(reverse)
     return transition
-
-def questclipitem(image,video, timein, timeout, start, end,current_path):
-    clipitem = Element('clipitem')
-    name = Element('name')
-    name.text= image
-    clipitem.append(name)
-    enabled = Element('enabled')
-    enabled.text= 'true'
-    clipitem.append(enabled)
-    questduration = Element('duration')
-    questduration.text='36000'
-    clipitem.append(questduration)
-    rate = Element('rate')
-    clipitem.append(rate)
-    timebase = Element('timebase')
-    timebase.text= '30'
-    rate.append(timebase) 
-    ntsc = Element('ntsc')
-    ntsc.text= 'true'
-    rate.append(ntsc)
-    tin = Element('in')
-    tin.text= timein
-    clipitem.append(tin)
-    tout = Element('out')
-    alphatype = Element('alphatype')
-    alphatype.text= 'straight'
-    clipitem.append(alphatype)
-    tout.text= timeout
-    clipitem.append(tout)
-    st = Element('start')
-    st.text= start
-    clipitem.append(st)
-    en = Element('end')
-    en.text= end
-    clipitem.append(en)
-    file = Element('file')
-    file.attrib['id']= image
-    clipitem.append(file)
-
-    name = Element('name')
-    name.text= image
-    file.append(name)
-    pathurl = Element('pathurl')
-    pathurl.text= current_path+"\\"+r"pysrc\image_src"+"\\"+video[:-4]+'_quest.png'
-    file.append(pathurl)
-    media = Element('media')
-    file.append(media)
-    vi = Element('video')
-    media.append(vi)
-    samplecharacteristics = Element('samplecharacteristics')
-    vi.append(samplecharacteristics)
-    width = Element('width')
-    width.text= '450'
-    samplecharacteristics.append(width)
-    height = Element('height')
-    height.text= '800'
-    samplecharacteristics.append(height)    
-    anamorphic = Element('anamorphic')
-    anamorphic.text= 'false'
-    samplecharacteristics.append(anamorphic)    
-    pixelaspectratio = Element('pixelaspectratio')
-    pixelaspectratio.text= 'square'
-    samplecharacteristics.append(pixelaspectratio)    
-    fielddominance = Element('fielddominance')
-    fielddominance.text= 'none'
-    samplecharacteristics.append(fielddominance)    
-
-    filter = Element('filter')
-    clipitem.append(filter)
-    effect = Element('effect')
-    filter.append(effect)
-    filtername = Element('name')
-    filtername.text= 'Basic Motion'
-    effect.append(filtername)    
-    effectid = Element('effectid')
-    effectid.text= 'basic'
-    effect.append(effectid)    
-    effectcategory = Element('effectcategory')
-    effectcategory.text= 'motion'
-    effect.append(effectcategory)    
-    effecttype = Element('effecttype')
-    effecttype.text= 'motion'
-    effect.append(effecttype)    
-    mediatype = Element('mediatype')
-    mediatype.text= 'video'
-    effect.append(mediatype)    
-    pproBypass = Element('pproBypass')
-    pproBypass.text= 'false'
-    effect.append(pproBypass)    
-
-    parameter = Element('parameter')
-    parameter.attrib['authoringApp']= "PremierePro"
-    effect.append(parameter)
-    parameterid = Element('parameterid')
-    parameterid.text= 'center'
-    parameter.append(parameterid)    
-    parametername = Element('name')
-    parametername.text= 'Center'
-    parameter.append(parametername)    
-    value = Element('value')
-    parameter.append(value)    
-    horiz = Element('horiz')
-    horiz.text= '1.65'
-    value.append(horiz)   
-    vert = Element('vert')
-    vert.text= '-0.07'
-    value.append(vert)   
-    
-    parameter = Element('parameter')
-    parameter.attrib['authoringApp']= "PremierePro"
-    effect.append(parameter)
-    parameterid = Element('parameterid')
-    parameterid.text= 'rotation'
-    parameter.append(parameterid)    
-    valuemin = Element('valuemin')
-    valuemin.text= '-8640'
-    parameter.append(valuemin)        
-    valuemax = Element('valuemax')
-    valuemax.text= '8640'
-    parameter.append(valuemax)   
-    value = Element('value')
-    value.text= '1'
-    parameter.append(value)   
-
-    return clipitem
-def scrollclipitem(image,video, timein, timeout, start, end,current_path, img_path):
+def scrollclipitem(image,video, timein, timeout, start, end, current_path, img_path, buddy='False'):
     clipitem = Element('clipitem')
     name = Element('name')
     name.text= image
@@ -515,12 +413,50 @@ def scrollclipitem(image,video, timein, timeout, start, end,current_path, img_pa
     value = Element('value')
     parameter.append(value)    
     horiz = Element('horiz')
-    horiz.text= '1.65'
+    horiz.text= '1.62'
     value.append(horiz)   
     vert = Element('vert')
     vert.text= '-0.07'
     value.append(vert)   
 
+    if buddy == 'False':
+        parameter = Element('parameter')
+        parameter.attrib['authoringApp']= "PremierePro"
+        effect.append(parameter)
+        parameterid = Element('parameterid')
+        parameterid.text= 'scale'
+        parameter.append(parameterid)    
+        parametername = Element('name')
+        parametername.text= 'Scale'
+        parameter.append(parametername)    
+        valuemin = Element('valuemin')
+        valuemin.text= '0'
+        parameter.append(valuemin)        
+        valuemax = Element('valuemax')
+        valuemax.text= '1000'
+        parameter.append(valuemax)   
+        value = Element('value')
+        value.text= '97'
+        parameter.append(value)   
+    else:
+        parameter = Element('parameter')
+        parameter.attrib['authoringApp']= "PremierePro"
+        effect.append(parameter)
+        parameterid = Element('parameterid')
+        parameterid.text= 'scale'
+        parameter.append(parameterid)    
+        parametername = Element('name')
+        parametername.text= 'Scale'
+        parameter.append(parametername)    
+        valuemin = Element('valuemin')
+        valuemin.text= '0'
+        parameter.append(valuemin)        
+        valuemax = Element('valuemax')
+        valuemax.text= '1000'
+        parameter.append(valuemax)   
+        value = Element('value')
+        value.text= '97'
+        parameter.append(value)   
     parameter = Element('parameter')
     parameter.attrib['authoringApp']= "PremierePro"
     effect.append(parameter)
@@ -538,7 +474,7 @@ def scrollclipitem(image,video, timein, timeout, start, end,current_path, img_pa
     parameter.append(value)   
 
     return clipitem
-def hpclipitem(image, timein, timeout, start, end,current_path, user):
+def hpclipitem(image, timein, timeout, start, end,current_path, user, buddy):
     clipitem = Element('clipitem')
     name = Element('name')
     name.text= image
@@ -580,10 +516,30 @@ def hpclipitem(image, timein, timeout, start, end,current_path, user):
     name.text= image
     file.append(name)
     pathurl = Element('pathurl')
-    if user == 'matsuri':
-        pathurl.text= current_path+"\\"+r"pysrc\heropower\japan"+"\\"+image
+    if buddy == 'False':
+        print('here buddy False')
+        if user == 'matsuri':
+            pathurl.text= current_path+"\\"+r"pysrc\heropower\japan"+"\\"+image
+        elif user == 'rimgosu' or user == 'duckdragon' or user == 'zanyang':
+            pathurl.text= current_path+"\\"+r"pysrc\heropower"+"\\"+image
+        else:
+            pass
+    elif buddy == 'anomalies':
+        print('here buddy False')
+        if user == 'matsuri':
+            pathurl.text= current_path+"\\"+r"pysrc\anomalies\japan"+"\\"+image
+        elif user == 'rimgosu' or user == 'duckdragon' or user == 'zanyang':
+            pathurl.text= current_path+"\\"+r"pysrc\anomalies"+"\\"+image
+        else:
+            pass
     else:
-        pathurl.text= current_path+"\\"+r"pysrc\heropower"+"\\"+image
+        print('here buddy True')
+        if user == 'matsuri':
+            pathurl.text= current_path+"\\"+r"pysrc\herobuddy\japan"+"\\"+image
+        elif user == 'rimgosu' or user == 'duckdragon' or user == 'zanyang':
+            pathurl.text= current_path+"\\"+r"pysrc\herobuddy"+"\\"+image
+        else:
+            pass
     file.append(pathurl)
     media = Element('media')
     file.append(media)
@@ -629,6 +585,171 @@ def hpclipitem(image, timein, timeout, start, end,current_path, user):
     pproBypass = Element('pproBypass')
     pproBypass.text= 'false'
     effect.append(pproBypass)    
+
+    if buddy == 'False':
+        pass
+    else:
+        parameter = Element('parameter')
+        parameter.attrib['authoringApp']= "PremierePro"
+        effect.append(parameter)
+        parameterid = Element('parameterid')
+        parameterid.text= 'scale'
+        parameter.append(parameterid)    
+        parametername = Element('name')
+        parametername.text= 'Scale'
+        parameter.append(parametername)    
+        valuemin = Element('valuemin')
+        valuemin.text= '0'
+        parameter.append(valuemin)        
+        valuemax = Element('valuemax')
+        valuemax.text= '1000'
+        parameter.append(valuemax)   
+        value = Element('value')
+        value.text= '110'
+        parameter.append(value)   
+
+    parameter = Element('parameter')
+    parameter.attrib['authoringApp']= "PremierePro"
+    effect.append(parameter)
+    parameterid = Element('parameterid')
+    parameterid.text= 'center'
+    parameter.append(parameterid)    
+    parametername = Element('name')
+    parametername.text= 'Center'
+    parameter.append(parametername)    
+    value = Element('value')
+    parameter.append(value)    
+    horiz = Element('horiz')
+    horiz.text= '1.65'
+    value.append(horiz)   
+    vert = Element('vert')
+    vert.text= '-0.07'
+    value.append(vert)   
+    
+    parameter = Element('parameter')
+    parameter.attrib['authoringApp']= "PremierePro"
+    effect.append(parameter)
+    parameterid = Element('parameterid')
+    parameterid.text= 'rotation'
+    parameter.append(parameterid)    
+    valuemin = Element('valuemin')
+    valuemin.text= '-8640'
+    parameter.append(valuemin)        
+    valuemax = Element('valuemax')
+    valuemax.text= '8640'
+    parameter.append(valuemax)   
+    value = Element('value')
+    value.text= '1'
+    parameter.append(value)   
+
+    return clipitem
+def imgclipitem(image, timein, timeout, start, end,current_path, user, imgpath):
+    clipitem = Element('clipitem')
+    name = Element('name')
+    name.text= image
+    clipitem.append(name)
+    enabled = Element('enabled')
+    enabled.text= 'true'
+    clipitem.append(enabled)
+    questduration = Element('duration')
+    questduration.text='36000'
+    clipitem.append(questduration)
+    rate = Element('rate')
+    clipitem.append(rate)
+    timebase = Element('timebase')
+    timebase.text= '30'
+    rate.append(timebase) 
+    ntsc = Element('ntsc')
+    ntsc.text= 'true'
+    rate.append(ntsc)
+    tin = Element('in')
+    tin.text= timein
+    clipitem.append(tin)
+    tout = Element('out')
+    alphatype = Element('alphatype')
+    alphatype.text= 'straight'
+    clipitem.append(alphatype)
+    tout.text= timeout
+    clipitem.append(tout)
+    st = Element('start')
+    st.text= start
+    clipitem.append(st)
+    en = Element('end')
+    en.text= end
+    clipitem.append(en)
+    file = Element('file')
+    file.attrib['id']= image
+    clipitem.append(file)
+
+    name = Element('name')
+    name.text= image
+    file.append(name)
+    pathurl = Element('pathurl')
+    pathurl.text= imgpath
+    file.append(pathurl)
+    media = Element('media')
+    file.append(media)
+    vi = Element('video')
+    media.append(vi)
+    samplecharacteristics = Element('samplecharacteristics')
+    vi.append(samplecharacteristics)
+    width = Element('width')
+    width.text= '450'
+    samplecharacteristics.append(width)
+    height = Element('height')
+    height.text= '800'
+    samplecharacteristics.append(height)    
+    anamorphic = Element('anamorphic')
+    anamorphic.text= 'false'
+    samplecharacteristics.append(anamorphic)    
+    pixelaspectratio = Element('pixelaspectratio')
+    pixelaspectratio.text= 'square'
+    samplecharacteristics.append(pixelaspectratio)    
+    fielddominance = Element('fielddominance')
+    fielddominance.text= 'none'
+    samplecharacteristics.append(fielddominance)    
+
+    filter = Element('filter')
+    clipitem.append(filter)
+    effect = Element('effect')
+    filter.append(effect)
+    filtername = Element('name')
+    filtername.text= 'Basic Motion'
+    effect.append(filtername)    
+    effectid = Element('effectid')
+    effectid.text= 'basic'
+    effect.append(effectid)    
+    effectcategory = Element('effectcategory')
+    effectcategory.text= 'motion'
+    effect.append(effectcategory)    
+    effecttype = Element('effecttype')
+    effecttype.text= 'motion'
+    effect.append(effecttype)    
+    mediatype = Element('mediatype')
+    mediatype.text= 'video'
+    effect.append(mediatype)    
+    pproBypass = Element('pproBypass')
+    pproBypass.text= 'false'
+    effect.append(pproBypass)    
+
+    parameter = Element('parameter')
+    parameter.attrib['authoringApp']= "PremierePro"
+    effect.append(parameter)
+    parameterid = Element('parameterid')
+    parameterid.text= 'scale'
+    parameter.append(parameterid)    
+    parametername = Element('name')
+    parametername.text= 'Scale'
+    parameter.append(parametername)    
+    valuemin = Element('valuemin')
+    valuemin.text= '0'
+    parameter.append(valuemin)        
+    valuemax = Element('valuemax')
+    valuemax.text= '1000'
+    parameter.append(valuemax)   
+    value = Element('value')
+    value.text= '110'
+    parameter.append(value)   
 
     parameter = Element('parameter')
     parameter.attrib['authoringApp']= "PremierePro"
@@ -761,7 +882,6 @@ def soundeffectclipitem(efsoundfile, timein, timeout, start, end, efsoundfile_pa
     sourcetrack.append(trackindex)
 
     return clipitem
-
 def bgmclipitem(bgmsoundfile, timein, timeout, start, end, bgmsoundfile_path, length, tracknumber):
     clipitem = Element('clipitem')
     name = Element('name')
@@ -859,6 +979,68 @@ def bgmclipitem(bgmsoundfile, timein, timeout, start, end, bgmsoundfile_path, le
 
     return clipitem
 
+def add_newminion_information(video, track2f, track3f, audiotrack, user, newminion_list, start_index, end_index, current_path, newminion_patchday):
+    newminion_path = os.path.join(current_path, 'pysrc')
+    newminion_path = os.path.join(newminion_path, 'newminion')
+    newminion_path = os.path.join(newminion_path, newminion_patchday)
+    backup_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'minionbackup.png'
+    if user == 'matsuri':
+        newminion_path = os.path.join(newminion_path, 'jp')
+    elif user == 'rimgosu':
+        newminion_path = os.path.join(newminion_path, 'kr')
+    elif user == 'duckdragon':
+        newminion_path = os.path.join(newminion_path, 'kr')
+    elif user == 'zanyang':
+        newminion_path = os.path.join(newminion_path, 'kr')
+    elif user == 'shadybunny':
+        newminion_path = os.path.join(newminion_path, 'en')
+    elif user == 'sunbacon':
+        newminion_path = os.path.join(newminion_path, 'en')
+
+    for x in range(len(newminion_list)):
+        if x % 4 == 0:
+            display_newminion_time = in_to_start(start_index, end_index, newminion_list[x]) 
+        for y in [1,2,3]:
+            if x % 4 == y and newminion_list[x] != '-':
+                np = os.path.join(newminion_path, newminion_list[x])
+                rand1_2 =  random.randint(1,2)
+                randhook = 'randhook' + str( rand1_2 ) + '.mp3'
+                sound_path = current_path + r'\pysrc\wav_src' + '\\' +randhook
+                clipscroll = scrollclipitem(
+                    'minionbackup.png',
+                    video, 
+                    str(display_newminion_time+y*200 - 120), 
+                    str(display_newminion_time+200+y*200 - 120), 
+                    str(display_newminion_time+y*200 - 120), 
+                    str(display_newminion_time+200+y*200 - 120), 
+                    current_path,
+                    backup_path
+                    )
+                track2f.append(clipscroll)
+                clipheropower = imgclipitem(
+                    newminion_list[x],
+                    str(display_newminion_time+y*200 - 120), 
+                    str(display_newminion_time+200+y*200 - 120), 
+                    str(display_newminion_time+y*200 - 120), 
+                    str(display_newminion_time+200+y*200 - 120), 
+                    current_path,
+                    user,
+                    np
+                    )
+                track3f.append(clipheropower)
+                if y == 1:
+                    soundeffect = soundeffectclipitem(
+                        randhook,
+                        '0',
+                        '60',
+                        str(display_newminion_time+y*200 - 150), 
+                        str(display_newminion_time+200+y*200 - 150), 
+                        sound_path,
+                        '60'
+                    )
+                    audiotrack.append(soundeffect)
+    
+
 def run_tree(
     current_path,
     input_path,
@@ -867,19 +1049,21 @@ def run_tree(
     fr,
     start_index_frame,
     end_index_frame,
-    quest_start,
-    quest_end,
-    quest_bool,
-    heropower
+    heropower,
+    newminion_forxml,
+    newminion_patchday,
+    anomalies=''
     ):
     videopy = VideoFileClip(input_path + "/" + video)
     total_duration = videopy.end * fr
     scroll_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'scroll.png'
     hpbackup_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'hpbackup.png'
+    buddybackup_path = current_path+"\\"+r"pysrc\image_src"+"\\"+'buddybackup.png'
     xmeml = Element('xmeml')
     xmeml.attrib['version']='5'
 
     print('here')
+    print(heropower)
 
     sequence = Element('sequence')
     sequence.attrib['id']="video"
@@ -1002,73 +1186,105 @@ def run_tree(
             start = end
             end = start + end_index_frame[j+1] - start_index_frame[j+1]
 
-    if quest_bool:
-        clipscroll = scrollclipitem(
-            'scroll.png',
-            video, 
-            str(quest_start), 
-            str(quest_end), 
-            str(quest_start), 
-            str(quest_end), 
-            current_path,
-            scroll_path
-            )
-        trackscroll.append(clipscroll)
-        clipquest = questclipitem(
-            video[:-4]+'_quest_bgremoved.png',
-            video, 
-            str(quest_start), 
-            str(quest_end), 
-            str(quest_start), 
-            str(quest_end), 
-            current_path
-            )
-        trackquest.append(clipquest)
-        soundeffect = soundeffectclipitem(
-            'Hole_punch.mp3',
-            '0',
-            '60',
-            str(quest_start),
-            str(quest_start + 60),
-            current_path + r'\pysrc\wav_src\Hole_punch.mp3',
-            '60'
-        )
-        trackefsound.append(soundeffect)
-
     user = who(video)
     print('user: ' + user)
-    if heropower:
-        clipscroll = scrollclipitem(
-            'hpbackup.png',
-            video, 
-            str(end_index_frame[0] - start_index_frame[0]+ 120), 
-            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
-            str(end_index_frame[0] - start_index_frame[0]+ 120), 
-            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
-            current_path,
-            hpbackup_path
+    if user == 'shadybunny' or user == 'sunbacon':
+        pass
+    else:
+        if heropower:
+            heropower_display_start = str(end_index_frame[0] - start_index_frame[0]+ 120)
+            heropower_display_end = str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120)
+            clipscroll = scrollclipitem(
+                'hpbackup.png',
+                video, 
+                heropower_display_start, 
+                heropower_display_end, 
+                heropower_display_start, 
+                heropower_display_end, 
+                current_path,
+                hpbackup_path
+                )
+            trackscroll.append(clipscroll)
+            clipheropower = hpclipitem(
+                heropower,
+                heropower_display_start, 
+                heropower_display_end, 
+                heropower_display_start, 
+                heropower_display_end, 
+                current_path,
+                user,
+                'False'
+                )
+            trackquest.append(clipheropower)
+
+            # for anomalies
+            print(anomalies)
+            anomalies_display_start = heropower_display_end
+            anomalies_display_end = str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120 + 300)
+            clipscroll = scrollclipitem(
+                'hpbackup.png',
+                video, 
+                anomalies_display_start, 
+                anomalies_display_end, 
+                anomalies_display_start, 
+                anomalies_display_end, 
+                current_path,
+                buddybackup_path,
+                buddy='anomalies'
+                )
+            trackscroll.append(clipscroll)
+
+            clipheropower = hpclipitem(
+                anomalies,
+                anomalies_display_start, 
+                anomalies_display_end, 
+                anomalies_display_start, 
+                anomalies_display_end,  
+                current_path,
+                user,
+                'anomalies'
+                )
+            trackquest.append(clipheropower)
+
+            
+            # #for buddy
+            # herobuddy = heropower[:-4] + '_buddy.png'
+            # buddy_display_start = heropower_display_end
+            # buddy_display_end = str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120 + 300)
+            
+            # clipscroll = scrollclipitem(
+            #     'buddybackup.png',
+            #     video, 
+            #     buddy_display_start, 
+            #     buddy_display_end, 
+            #     buddy_display_start, 
+            #     buddy_display_end, 
+            #     current_path,
+            #     buddybackup_path,
+            #     buddy='False'
+            #     )
+            # trackscroll.append(clipscroll)
+            # clipheropower = hpclipitem(
+            #     herobuddy,
+            #     buddy_display_start, 
+            #     buddy_display_end, 
+            #     buddy_display_start, 
+            #     buddy_display_end, 
+            #     current_path,
+            #     user,
+            #     'True'
+            #     )
+            # trackquest.append(clipheropower)
+            soundeffect = soundeffectclipitem(
+                'huk.mp3',
+                '0',
+                '60',
+                str(end_index_frame[0] - start_index_frame[0] + 115),
+                str(end_index_frame[0] - start_index_frame[0] + 165),
+                current_path + r'\pysrc\wav_src\huk.mp3',
+                '60'
             )
-        trackscroll.append(clipscroll)
-        clipheropower = hpclipitem(
-            heropower,
-            str(end_index_frame[0] - start_index_frame[0]+ 120), 
-            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
-            str(end_index_frame[0] - start_index_frame[0]+ 120), 
-            str(end_index_frame[0] - start_index_frame[0] + end_index_frame[1] - start_index_frame[1]+ 120), 
-            current_path,
-            user
-            )
-        trackquest.append(clipheropower)
-        soundeffect = soundeffectclipitem(
-            'huk.mp3',
-            '0',
-            '60',
-            str(end_index_frame[0] - start_index_frame[0] + 115),
-            str(end_index_frame[0] - start_index_frame[0] + 165),
-            current_path + r'\pysrc\wav_src\huk.mp3',
-            '60'
-        )
-        trackefsound.append(soundeffect)
+            trackefsound.append(soundeffect)
     
     if user == 'matsuri':
         rand1_3 =  random.randint(1,3)
@@ -1110,38 +1326,65 @@ def run_tree(
             str(outro_end), 
         )
         track3.append(clip3)
+    elif user == 'x-later':
+        intro_duration = 300
+        introvideo = 'zanyang_intro1.mp4'
+        introvideo_path = os.path.join(current_path, 'pysrc')
+        introvideo_path = os.path.join(introvideo_path, 'video_src')
+        introvideo_path = os.path.join(introvideo_path, user)
+        
+        clip1 = videoclipitem(
+            introvideo, 
+            str(0), 
+            str(intro_duration), 
+            str(0), 
+            str(intro_duration), 
+            str(intro_duration), 
+            str(0),
+            introvideo_path + '\\' + introvideo
+            )
+        trackscroll.append(clip1)
+        soundeffect = soundeffectclipitem(
+            'Hole_punch.mp3',
+            str(0), 
+            str(60), 
+            str(0), 
+            str(60), 
+            current_path + r'\pysrc\wav_src\Hole_punch.mp3',
+            '60'
+        )
+        trackefsound.append(soundeffect)
 
+    add_newminion_information(
+        video, 
+        trackscroll, 
+        trackquest, 
+        trackefsound, 
+        user, 
+        newminion_forxml, 
+        start_index_frame, 
+        end_index_frame, 
+        current_path, 
+        newminion_patchday)
 
-    if user == 'beterbabbit':
-        beterbabbit_bgm1 = bgmclipitem(
-            'BETERBABBIT_BGM.mp3',
+    if user == 'sunbacon':
+        sunbacon_bgm1 = bgmclipitem(
+            'sunba_bgm.mp3',
             str(0),
             str(end),
             str(0),
             str(end),
-            current_path + r'\pysrc\wav_src\BETERBABBIT_BGM.mp3',
+            current_path + r'\pysrc\wav_src\sunba_bgm.mp3',
             str(106992),
             str(1)
         )
-        beterbabbit_bgm2 = bgmclipitem(
-            'BETERBABBIT_BGM.mp3',
-            str(0),
-            str(end),
-            str(0),
-            str(end),
-            current_path + r'\pysrc\wav_src\BETERBABBIT_BGM.mp3',
-            str(106992),
-            str(2)
-        )
         trackbgm1 = Element('track')
         audio.append(trackbgm1)
-        trackbgm2 = Element('track')
-        audio.append(trackbgm2)
-        trackbgm1.append(beterbabbit_bgm1)
-        trackbgm2.append(beterbabbit_bgm2)
+        trackbgm1.append(sunbacon_bgm1)
 
     tree = ElementTree(xmeml)
     fileName = current_path+"/inputvideo/xmlcache/"+ video[:-4]+".xml"
+    
     with open(fileName, "wb") as file:
         tree.write(file, encoding='utf-8', xml_declaration=True)
 def run_dissolve_all(
@@ -1389,16 +1632,3 @@ if __name__ == "__main__":
     print(video_list)
     print(video_list[0])
     fr = 60
-    start_index_frame = [100, 200]
-    end_index_frame = [150, 250]
-    quest_start = 150
-    quest_end = 200
-    run_tree(
-        current_path,
-        video_list[0],
-        fr,
-        start_index_frame,
-        end_index_frame,
-        quest_start,
-        quest_end
-        )

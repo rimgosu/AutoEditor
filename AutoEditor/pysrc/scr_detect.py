@@ -18,7 +18,9 @@ def scr_detect(
     for f in os.listdir(scr_path):
         os.remove(os.path.join(scr_path, f))    
 
-    while True:
+    j=0
+    # 15분이 지났는데도 루프를 계속 돌고있을 시, 강제종료
+    while j<180:
         scr = scr_path + name + ".png"
         if os.path.exists(scr):
             os.remove(scr)
@@ -34,6 +36,7 @@ def scr_detect(
         if len(text) + 1 == i: 
             break
         i += 1
+        j += 1
 
 if __name__ == "__main__":
     current_path = os.path.dirname(__file__)

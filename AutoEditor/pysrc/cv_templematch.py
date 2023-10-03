@@ -10,7 +10,10 @@ from pysrc.user_discrimination import who
 def set_list_sort(index):
     index = set(index)
     index = list(index)
-    index.sort()
+    try:
+        index.sort()
+    except:
+        pass
     return index
 def index_exapnd(input_index, minus_constant, plus_constant):
     output_index = []
@@ -124,7 +127,7 @@ def find_heropower(video, video_second):
         for i in hpimg_list:
             target = "\\"+ i
             cutsave_path = hptemp_path + target[:-4] + "_cut.png"
-            _targetsave_image(target, [119, 120], [230, 209], 0.621, hpimg_path)
+            _targetsave_image(target, [134, 118], [246, 207], 0.621, hpimg_path)
             matched = matchimage(hptemp_path + "\\" "hpcheck.png", cutsave_path, threshold=0.85)
             if matched is not None:
                 break
@@ -140,6 +143,43 @@ def find_heropower(video, video_second):
 
     matched = matched[:-8] + '.png'
     return matched
+
+def find_anomalies(video, video_second):
+    current_path = os.path.join(os.path.dirname(__file__), os.pardir)
+    inputvideo_path = os.path.join(current_path, 'inputvideo')
+    inputvideo = os.path.join(inputvideo_path, video)
+
+    hpimg_path = os.path.join(current_path, 'pysrc')
+    hpimg_path = os.path.join(hpimg_path, 'anomalies')
+    hptemp_path = os.path.join(hpimg_path, 'hptemp')
+    hpimg_list = os.listdir(hpimg_path)
+    hpimg_list = [file for file in hpimg_list if file.endswith(".png")]
+    time = video_second + 100
+
+    hptest = True
+    hpindex = 0
+    while hptest:
+        vidoescreenshot(inputvideo, time + hpindex, hptemp_path + "/hpcheck.png",1570,370,100,100)
+        for i in hpimg_list:
+            target = "\\"+ i
+            cutsave_path = hptemp_path + target[:-4] + "_cut.png"
+            _targetsave_image(target, [142, 118], [236, 210], 0.442, hpimg_path)
+            matched = matchimage(hptemp_path + "\\" "hpcheck.png", cutsave_path, threshold=0.75)
+            if matched is not None:
+                break
+        if matched is not None:
+            hptest = False
+            print('matched!')
+        else:
+            hptest = True
+            hpindex += 5
+            print(time + hpindex)
+        if hpindex == 100:
+            hptest = False
+
+    matched = matched[:-8] + '.png'
+    return matched
+
 def find_battles_second(video, inputvideo_path, screenshot = True):
     current_path = os.path.join(os.path.dirname(__file__), os.pardir)
     inputvideo = os.path.join(inputvideo_path, video)
@@ -173,9 +213,34 @@ def find_battles_second(video, inputvideo_path, screenshot = True):
     print(battle_index)
     return battle_index
 
-def newminion_detect(video, inputvideo_path, second, patchday='_230118', imagecut_init = True):
+    # 과거: mul = 0.54 
+def newminion_cut(patchday='_230315', imagecut_init = True, m1=[118,100], m2=[270,256], mul=0.54):
     current_path = os.path.join(os.path.dirname(__file__), os.pardir)
     
+    forcuts_path = os.path.join(current_path, 'pysrc')
+    forcuts_path = os.path.join(forcuts_path, 'newminion')
+    forcuts_path = os.path.join(forcuts_path, patchday)
+    forcuts_path = os.path.join(forcuts_path, 'forcuts')
+    forcuts_images = os.listdir(forcuts_path)
+    forcuts_images = [file for file in forcuts_images if file.endswith(".png")]
+
+    videocapture_path = os.path.join(current_path, 'pysrc')
+    videocapture_path = os.path.join(videocapture_path, 'newminion')
+    videocapture_path = os.path.join(videocapture_path, patchday)
+    videocapture_path = os.path.join(videocapture_path, 'screenshot_temp')
+
+    cut_completed_path = os.path.join(current_path, 'pysrc')
+    cut_completed_path = os.path.join(cut_completed_path, 'newminion')
+    cut_completed_path = os.path.join(cut_completed_path, patchday)
+    cut_completed_path = os.path.join(cut_completed_path, 'cut_completed')
+    
+    if imagecut_init:
+        for x in forcuts_images:
+            cut_img = cut_image(forcuts_path + '/' + x, m1, m2, mul)
+            cv2.imwrite(cut_completed_path + '/' + x, cut_img)
+
+def newminion_detect(video, inputvideo_path, second, patchday='_230315', forbrann='False'):
+    current_path = os.path.join(os.path.dirname(__file__), os.pardir)
     forcuts_path = os.path.join(current_path, 'pysrc')
     forcuts_path = os.path.join(forcuts_path, 'newminion')
     forcuts_path = os.path.join(forcuts_path, patchday)
@@ -193,22 +258,55 @@ def newminion_detect(video, inputvideo_path, second, patchday='_230118', imagecu
     cut_completed_path = os.path.join(cut_completed_path, 'newminion')
     cut_completed_path = os.path.join(cut_completed_path, patchday)
     cut_completed_path = os.path.join(cut_completed_path, 'cut_completed')
+    cut_completed_images = os.listdir(cut_completed_path)
+    cut_completed_images = [file for file in cut_completed_images if file.endswith(".png")]
 
-    print('forcuts_images:', forcuts_images)
+    match_list = []
+    for y in range(3):
+        if forbrann == 'True':
+            vidoescreenshot(inputvideo, second+y/2, videocapture_path + '/screenshot.png', x=479,y=501,w=969,h=188)
+            _thr = 0.70
+        elif forbrann == 'False':
+            vidoescreenshot(inputvideo, second+y/2, videocapture_path + '/screenshot.png', x=479,y=322,w=969,h=372)
+            _thr = 0.70
+        for x in cut_completed_images:
+            matched = matchimage(videocapture_path + '/screenshot.png', cut_completed_path + '/' + x, threshold=_thr)
+            match_list.append(matched)
 
-    vidoescreenshot(inputvideo, second, videocapture_path + '/screenshot.png', x=479,y=322,w=969,h=372)
-    if imagecut_init:
-        for x in forcuts_images:
-            cut_img = cut_image(forcuts_path + '/' + x, m1=[104,101], m2=[256,257], mul=0.54)
-            cv2.imwrite(cut_completed_path + '/' + x, cut_img)
-    for x in forcuts_images:
-        matched = matchimage(videocapture_path + '/screenshot.png', cut_completed_path + '/' + x, threshold=0.65)
-        print(matched)
+    match_list = set_list_sort(match_list)
+    if forbrann == 'False':
+        match_list.remove(None)
+    while len(match_list) >= 4:
+        del match_list[0]
+    print(match_list)
+    return match_list
+
+def cutimage_remove(matched_list, patchday='_230315'):
+    current_path = os.path.join(os.path.dirname(__file__), os.pardir)
+    forcuts_path = os.path.join(current_path, 'pysrc')
+    forcuts_path = os.path.join(forcuts_path, 'newminion')
+    forcuts_path = os.path.join(forcuts_path, patchday)
+    forcuts_path = os.path.join(forcuts_path, 'forcuts')
+    forcuts_images = os.listdir(forcuts_path)
+    forcuts_images = [file for file in forcuts_images if file.endswith(".png")]
+
+    cut_completed_path = os.path.join(current_path, 'pysrc')
+    cut_completed_path = os.path.join(cut_completed_path, 'newminion')
+    cut_completed_path = os.path.join(cut_completed_path, patchday)
+    cut_completed_path = os.path.join(cut_completed_path, 'cut_completed')
+
+    for x in matched_list:
+        exist_image = cut_completed_path + '/' + x
+        if os.path.isfile(exist_image):
+            os.remove(exist_image)
 
 if __name__ == "__main__":
     # find_battles_second('rimgosu std.mp4')
-    video = 'rimgosu yogg.mp4'
+    video = 'rimgosu homz.mp4'
     inputvideo_path = r'C:\Users\rimgosu\Desktop\ShareFolder\git\AutoEditor\inputvideo'
-    second = 1537
-    newminion_detect(video, inputvideo_path, second)
+    second = 752
+    newminion_cut()
+    for i in range(2):
+        newminion_list = newminion_detect(video, inputvideo_path, second)
+        cutimage_remove(newminion_list)
     pass

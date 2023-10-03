@@ -67,7 +67,8 @@ def start():
         changeXml=True,
         Premiere=edit_bool,
         screenshot=True,
-        uploadYotube=upload_bool
+        uploadYotube=upload_bool,
+        display_newminion=True
     )       
 
 current_path = os.path.dirname(__file__)

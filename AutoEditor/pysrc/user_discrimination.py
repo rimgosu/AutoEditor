@@ -1,5 +1,5 @@
 def who(video):
-    user_list = ['rimgosu', 'matsuri', 'beterbabbit', 'xqn', 'duckdragon']
+    user_list = ['rimgosu', 'matsuri', 'beterbabbit', 'shadybunny', 'duckdragon', 'zanyang', 'sunbacon']
     user = 'Default'
 
     r1 = video.find('rimgo')
@@ -20,20 +20,32 @@ def who(video):
     b4 = video.find('BETERBABBIT')
     b5 = video.find('BETERBABBIT')
     b6 = video.find('BETERBABBIT')
-    x1 = video.find('xqn')
-    x2 = video.find('xqn')
-    x3 = video.find('XQN')
-    x4 = video.find('XQN')
-    d1 = video.find('duckdr')
+    sh1 = video.find('shadybunny')
+    sh2 = video.find('shady')
+    sh3 = video.find('bunny')
+    sh4 = video.find('SHADYBUNNY')
+    sh5 = video.find('SHADY')
+    sh6 = video.find('BUNNY')
+    d1 = video.find('duck')
     d2 = video.find('duckdragon')
-    d3 = video.find('DUCKDR')
+    d3 = video.find('DUCK')
     d4 = video.find('DUCKDRAGON')
+    z1 = video.find('zanyang')
+    z2 = video.find('zanya')
+    z3 = video.find('ZANYANG')
+    z4 = video.find('ZANYA')
+    s1 = video.find('sunbacon')
+    s2 = video.find('sunba')
+    s3 = video.find('SUNBACON')
+    s4 = video.find('SUNBA')
 
     rimgosu_list = [r1, r2, r3, r4, r5, r6]
     matsuri_list = [m1, m2, m3, m4, m5, m6]
     beterbabbit_list = [b1, b2, b3, b4, b5, b6]
-    xqn_list = [x1, x2, x3, x4]
+    shadybunny_list = [sh1, sh2, sh3, sh4, sh5, sh6]
     duckdragon_list = [d1, d2, d3, d4]
+    zanyang_list = [z1, z2, z3, z4]
+    sunbacon_list = [s1, s2, s3, s4]
     for i in rimgosu_list:
         if i != -1:
             user = user_list[0]
@@ -43,12 +55,18 @@ def who(video):
     for i in beterbabbit_list:
         if i != -1:
             user = user_list[2]
-    for i in xqn_list:
+    for i in shadybunny_list:
         if i != -1:
             user = user_list[3]
     for i in duckdragon_list:
         if i != -1:
             user = user_list[4]
+    for i in zanyang_list:
+        if i != -1:
+            user = user_list[5]
+    for i in sunbacon_list:
+        if i != -1:
+            user = user_list[6]
 
     return user
 
@@ -76,5 +94,8 @@ def what_hero(hero_found):
     return hero
 
 if __name__ == "__main__":
+    user = who('shadybunny elise.mp4')
+    print(user)
+    
     hero = what_hero('_0_dena')
     print(hero)

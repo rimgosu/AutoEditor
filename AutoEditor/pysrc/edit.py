@@ -51,7 +51,8 @@ def check_hangul():
 def run_autoPremiere(
     current_path,
     video,
-    ex
+    ex,
+    Bool=False
 ):
     exposition1 = (445,202)
     exposition2 = (1858,988)
@@ -63,14 +64,17 @@ def run_autoPremiere(
     if os.path.exists(ex_file):
         os.remove(ex_file)
     kill_process('Opencapture.exe')
-    kill_process('chrome.exe')
+    #kill_process('chrome.exe')
     kill_process('explorer.exe')
     kill_process("Adobe Premiere Pro.exe")   
     kill_process("PotPlayer64.exe")   
     kill_process("notepad.exe")
+    kill_process("KakaoTalk.exe")
 
     subprocess.Popen(premiere_path)
     time.sleep(12)
+    pyautogui.click(exposition1)
+    time.sleep(0.5)
     pyautogui.keyDown('ctrl') 
     pyautogui.press('o')
     pyautogui.keyUp('ctrl')
@@ -80,6 +84,9 @@ def run_autoPremiere(
     time.sleep(0.5)
     pyautogui.press('enter')
     time.sleep(3)
+    if Bool:
+        pyautogui.press('enter')
+        time.sleep(3)
     pyautogui.press('alt')
     time.sleep(0.2)
     pyautogui.press('space')
@@ -131,7 +138,7 @@ def run_autoPremiere(
     scr_detect('encoding', current_path, scr_path, 'models/encoding.pt', 'runs/edetect')
     kill_process("Adobe Premiere Pro.exe")   
 
-def after_treatment(inputvideo_path, exportvideo_path, current_path):
+def after_treatment(inputvideo_path, exportvideo_path, current_path, Bool):
     onemorevideo = []
     inputvideos = os.listdir(inputvideo_path)
     inputvideos = [file for file in inputvideos if file.endswith(".mp4")]
@@ -152,7 +159,7 @@ def after_treatment(inputvideo_path, exportvideo_path, current_path):
     print(onemorevideo)
 
     for x in onemorevideo:
-        run_autoPremiere(current_path, x, exportvideo_path)
+        run_autoPremiere(current_path, x, exportvideo_path, Bool)
 
 if __name__=="__main__":
     current_path = os.path.dirname(__file__)
@@ -162,4 +169,9 @@ if __name__=="__main__":
     video_list = os.listdir(current_path + "/inputvideo/")
     video_list = [file for file in video_list if file.endswith(".mp4")]
     export_path = current_path + r'\inputvideo\export'
-    after_treatment(inputvideo_path, exportvideo_path, current_path)
+    Bool = True
+    after_treatment(inputvideo_path, exportvideo_path, current_path, Bool)
+    Bool = False
+    after_treatment(inputvideo_path, exportvideo_path, current_path, Bool)
+    Bool = True
+    after_treatment(inputvideo_path, exportvideo_path, current_path, Bool)

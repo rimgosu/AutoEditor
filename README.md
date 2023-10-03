@@ -35,16 +35,24 @@
 - premiere_path = r'C:\Program Files\Adobe\Adobe Premiere Pro 2023\Adobe Premiere Pro.exe'의 경로를 _Premier Pro가 설치되어있는 절대경로_ 로 변경해주세요.
 
 ### 사용 방법
-1. **게임 한 판**의 영상을 다음 경로로 영상을 넣어주세요: `/AutoEditor/inputvideo/rimgosu 영상.mp4`
-   
-    - **.mp4 영상만 허용됩니다.**
-    - 영상의 이름은 **'rimgosu', 'matsuri', 'duckdragon' 중 하나를 포함** 해야 정상적으로 동작합니다.
-        - ex : `matsuri test.mp4`
-    - 여러 영상을 넣어도 정상 동작합니다.
-    - export : 편집이 완전히 완료된 영상이 export 폴더에 담깁니다.
-    - xmlcache : 분석이 완료된 영상이 .xml 파일로 저장됩니다.
-    - wait : 자유롭게 활용해도 되는 여분 폴더입니다. 저는 주로 오류가 나는 영상들을 보관해두었다가 코드를 수정하는 데 사용하는 폴더였습니다.
-    - Premier Pro가 실행되는 도중 다른 작업을 하면 오류가 발생할 수 있습니다.
+
+<ol start="1" data-sourcepos="45:1-46:0" dir="auto">
+<li data-sourcepos="45:1-46:0"><strong>게임 한 판</strong>의 영상을 다음 경로로 영상을 넣어주세요: <br><code>예: /AutoEditor/inputvideo/rimgosu 영상.mp4</code></li>
+
+<details>
+<summary>주의사항 보기/접기</summary>
+
+ - **.mp4 영상만 허용됩니다.**
+ - 영상의 이름은 **'rimgosu', 'matsuri', 'duckdragon' 중 하나를 포함** 해야 정상적으로 동작합니다.
+     - ex : `matsuri test.mp4`
+ - 여러 영상을 넣어도 정상 동작합니다.
+ - export : 편집이 완전히 완료된 영상이 export 폴더에 담깁니다.
+ - xmlcache : 분석이 완료된 영상이 .xml 파일로 저장됩니다.
+ - wait : 자유롭게 활용해도 되는 여분 폴더입니다. 저는 주로 오류가 나는 영상들을 보관해두었다가 코드를 수정하는 데 사용하는 폴더였습니다.
+ - Premier Pro가 실행되는 도중 다른 작업을 하면 오류가 발생할 수 있습니다.
+
+</details>
+</ol>
    
 <ol start="2" data-sourcepos="45:1-46:0" dir="auto">
 <li data-sourcepos="45:1-46:0"><code>/AutoEditor/runAutoEditor.py</code>를 실행해주세요.</li>

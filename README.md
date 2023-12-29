@@ -1,4 +1,4 @@
-![image](https://github.com/rimgosu/AutoEditor/assets/120752098/a6c16f86-0fe8-4456-8112-2abf5d2f40de)
+<img width="772" alt="image" src="https://github.com/rimgosu/AutoEditor/assets/120752098/76e70b67-517e-401b-b145-06830ca16f9d">
 
 # AutoEditor
 

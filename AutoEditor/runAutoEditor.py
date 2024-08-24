@@ -50,6 +50,7 @@ import shutil
 import ffmpeg
 import math
 import numpy as np
+import subprocess
 from yolov5.detect_modified import *
 from moviepy.editor import VideoFileClip
 from pysrc.TREE import *
@@ -63,12 +64,31 @@ from pysrc.user_discrimination import *
 def framerate_resolution_change(inputvideo_path, outputvideo_path, framerate, res):
     if os.path.isfile(outputvideo_path):
         pass
-    else:
+    else: 
         stream = ffmpeg.input(inputvideo_path)  # video location
         stream = stream.filter('fps', fps=framerate, round='up')
         stream = stream.filter('scale', width = res, height = res)
         stream = ffmpeg.output(stream, outputvideo_path)
         ffmpeg.run(stream)
+# def framerate_resolution_change(inputvideo_path, outputvideo_path, framerate, res):
+#     if os.path.isfile(outputvideo_path):
+#         pass
+#     else:
+#         print(res)
+#         print(framerate)
+#         # FFmpeg 명령을 문자열로 작성
+#         ffmpeg_command = [
+#             'ffmpeg',  # FFmpeg 실행 파일
+#             '-hwaccel', 'cuvid',  # cuvid 하드웨어 가속 옵션 추가
+#             # '-c:v', 'h264_cuvid',
+#             '-i', inputvideo_path,  # 입력 비디오 파일
+#             '-vf', f'fps={framerate},scale={res}:{res}',  # 필터 옵션으로 프레임 속도 및 해상도 변경
+#             '-c:v', 'h264_nvenc',  # 출력 비디오 코덱 선택
+#             outputvideo_path  # 출력 비디오 파일
+#         ]
+        
+#         # FFmpeg 명령 실행
+#         subprocess.run(ffmpeg_command)
 def DeleteAllFiles(filePath):
     if os.path.exists(filePath):
         for file in os.scandir(filePath):
@@ -315,7 +335,7 @@ def run_autoEditor(
         # sumgigi pyosi
         BALGYUN_THRESHOLD = int(framerate * 1.5)
         PYOSI_THRESHOLD = int(framerate * 0.5)
-        BALGYUNEND_TO_DHEROPOWER_THRESHOLD_PLUS = int(framerate * 2.7)
+        BALGYUNEND_TO_DHEROPOWER_THRESHOLD_PLUS = int(framerate * 2.7) 
         BALGYUNEND_TO_DHEROPOWER_THRESHOLD_MINUS = int(framerate * 1)
         SUMPYO_index = [[0 for i in range(0)] for j in range(len(video_list))]
         SUMPYO_SE_index = [[0 for i in range(0)] for j in range(len(video_list))]
@@ -566,14 +586,14 @@ def run_autoEditor(
 
                     # pyosi, sumgigi
                     if yolo_list[i][j][k][0] == '24':
-                        if 0.25 < float(yolo_list[i][j][k][1]) < 0.30 and 0.70 < float(yolo_list[i][j][k][2]) < 0.82 and \
+                        if 0.25 < float(yolo_list[i][j][k][1]) < 0.32 and 0.60 < float(yolo_list[i][j][k][2]) < 0.82 and \
                             0.02 < float(yolo_list[i][j][k][3]) < 0.08 and 0.01 < float(yolo_list[i][j][k][4]) < 0.05:
-                            pyosi_index[i].append(j)
+                            pyosi_index[i].append(j)  #0822 0.3 -> 0.32 / 0.7 -> 0.6
                             pyosi_index[i].sort()
                     if yolo_list[i][j][k][0] == '25':
-                        if 0.25 < float(yolo_list[i][j][k][1]) < 0.30 and 0.70 < float(yolo_list[i][j][k][2]) < 0.82 and \
+                        if 0.25 < float(yolo_list[i][j][k][1]) < 0.32 and 0.55 < float(yolo_list[i][j][k][2]) < 0.82 and \
                             0.02 < float(yolo_list[i][j][k][3]) < 0.08 and 0.01 < float(yolo_list[i][j][k][4]) < 0.05:
-                            sumgigi_index[i].append(j)
+                            sumgigi_index[i].append(j) #0822 0.3 -> 0.32 / 0.7 -> 0.55
                             sumgigi_index[i].sort()      
 
                     if yolo_list[i][j][k][0] == '26':
@@ -723,12 +743,14 @@ def run_autoEditor(
                 hero = what_hero(heropower)
             except:
                 heropower = None
-                hero = '_2_'
+                hero = '_0_'        #_2_에서 _0_로변경 23.10.29
             # 5-1-1. find anomalies. #only 변형물
-            gamestart_second = gamestart[i] / framerate
-            anomalies = find_anomalies(video_list[i], gamestart_second)
-            print('anomalies:',anomalies)    
-
+            try:
+                gamestart_second = gamestart[i] / framerate
+                anomalies = find_anomalies(video_list[i], gamestart_second)
+                print('anomalies:',anomalies)    
+            except:
+                anomalies = False
             # 5-1-2 trim edge
             yolototal_index[i] = trim_edge(gamestart[i], gameend[i], yolototal_index[i])
             employ_index[i] = trim_edge(gamestart[i], gameend[i], employ_index[i])
@@ -1069,7 +1091,7 @@ def run_autoEditor(
             SUMPYO_index[i] = set_list_sort(SUMPYO_index[i])
             print("SUMPYO_index")
             print(SUMPYO_index)
-
+            
             try:
                 SUMPYO_SE_index[i].append(SUMPYO_index[i][0])
                 for j in range(len(SUMPYO_index[i])-1):
@@ -1169,7 +1191,6 @@ def run_autoEditor(
             
             print('sum_brann', _sum_brann)
 
-
             # 6. merge to SCENE INDEX
             index_range_append(SCENE_INDEX[i], gamestart[i], gameend[i])
             index_remove(SCENE_INDEX[i], EMOVE_INDEX_REVERSE[i])
@@ -1226,6 +1247,7 @@ def run_autoEditor(
             """
             # 6-3-1. early point
             # 1턴
+            hero = '_0_'
             if hero == '_0_':
                 if len(star_house_index[0]) != 0:
                     for j in range(BS_index[i][0], max(star_house_index[0])-STAR_MINUS_THRESHOLD):
@@ -1340,7 +1362,26 @@ def run_autoEditor(
             print(start_index[i])
             print(end_index[i])
 
-
+            # trinket 0822
+            trinket = []
+            trinketframe = []
+            grade = 0
+            print(balgyunend_to_dheropower[i])
+        
+            for j in range(len(balgyunend_to_dheropower[i])-1):
+                print(balgyunend_to_dheropower[i][j] + 1, balgyunend_to_dheropower[i][j+1])
+                if balgyunend_to_dheropower[i][j] + 1 != balgyunend_to_dheropower[i][j+1]:
+                    if grade < 2:
+                        try:
+                            trinket.append(find_trinket(video_list[i], balgyunend_to_dheropower[i][j]/framerate,grade))
+                            trinketframe.append(int((balgyunend_to_dheropower[i][j]+6)/rateframe))
+                            print('trinket',trinket)
+                            print('trinketframe',trinketframe)
+                            grade = grade + 1    
+                        except:
+                            print('trinket_False')
+            
+        
             # 9-1. video sound threshold
             mp4_to_wav(inputvideo_path[i], wav_path[i])
             mv = max_volume(wav_path[i], math.floor(framerate * videopy[i].end))
@@ -1469,6 +1510,9 @@ def run_autoEditor(
             
             print('newminion_forxml', newminion_forxml)
 
+            
+            
+
             # 11. export xml
             print(heropower)
             if changeXml:
@@ -1483,7 +1527,9 @@ def run_autoEditor(
                     heropower,
                     newminion_forxml,
                     newminion_patchday,
-                    anomalies
+                    anomalies,
+                    trinket,
+                    trinketframe
                     )
 
             # 12. xml to encoding
@@ -1542,8 +1588,8 @@ if __name__=="__main__":
     video_list = os.listdir(input_path)
     video_list = [file for file in video_list if file.endswith(".mp4")]
     print(video_list)
-    exf_path = os.path.join(current_path, 'inputvideo')
-    exf_path = os.path.join(exf_path, 'export')
+    exf_Dpath = os.path.join(current_path, 'inputvideo')
+    exf_path = os.path.join(exf_Dpath, 'export')
     run_autoEditor(    
         current_path,
         video_list,
@@ -1552,12 +1598,13 @@ if __name__=="__main__":
         framerate=3,
         res=1/3,
         FRchange=True,
-        yoloDetect=True,
+        yoloDetect=True,#
         changeXml=True,
-        Premiere=True,
+        Premiere=True,#
         screenshot=True,
         uploadYotube=False, #only False on real running
         display_newminion=True,
-        newminion_patchday='_230831',
-        shutdown=False
+        newminion_patchday='_240821',
+        shutdown=True
     )
+    

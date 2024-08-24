@@ -154,7 +154,7 @@ def find_anomalies(video, video_second):
     hptemp_path = os.path.join(hpimg_path, 'hptemp')
     hpimg_list = os.listdir(hpimg_path)
     hpimg_list = [file for file in hpimg_list if file.endswith(".png")]
-    time = video_second + 100
+    time = video_second
 
     hptest = True
     hpindex = 0
@@ -164,6 +164,45 @@ def find_anomalies(video, video_second):
             target = "\\"+ i
             cutsave_path = hptemp_path + target[:-4] + "_cut.png"
             _targetsave_image(target, [142, 118], [236, 210], 0.442, hpimg_path)
+            matched = matchimage(hptemp_path + "\\" "hpcheck.png", cutsave_path, threshold=0.75)
+            if matched is not None:
+                break
+        if matched is not None:
+            hptest = False
+            print('matched!')
+        else:
+            hptest = True
+            hpindex += 5
+            print(time + hpindex)
+        if hpindex == 100:
+            hptest = False
+
+    matched = matched[:-8] + '.png'
+    return matched
+
+def find_trinket(video, video_second, grade):
+    current_path = os.path.join(os.path.dirname(__file__), os.pardir)
+    inputvideo_path = os.path.join(current_path, 'inputvideo')
+    inputvideo = os.path.join(inputvideo_path, video)
+
+    hpimg_path = os.path.join(current_path, 'pysrc')
+    hpimg_path = os.path.join(hpimg_path, 'trinket')
+    hptemp_path = os.path.join(hpimg_path, 'hptemp')
+    hpimg_list = os.listdir(hpimg_path)
+    hpimg_list = [file for file in hpimg_list if file.endswith(".png")]
+    time = video_second
+
+    hptest = True
+    hpindex = 0
+    while hptest:
+        if grade == 0:
+            vidoescreenshot(inputvideo, time + hpindex, hptemp_path + "/hpcheck.png",805,855,40,40)
+        else:
+            vidoescreenshot(inputvideo, time + hpindex, hptemp_path + "/hpcheck.png",728,782,40,40)
+        for i in hpimg_list:
+            target = "\\"+ i
+            cutsave_path = hptemp_path + target[:-4] + "_cut.png"
+            _targetsave_image(target, [149, 89], [234, 178], 0.442, hpimg_path)
             matched = matchimage(hptemp_path + "\\" "hpcheck.png", cutsave_path, threshold=0.75)
             if matched is not None:
                 break

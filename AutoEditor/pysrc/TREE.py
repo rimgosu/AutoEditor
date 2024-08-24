@@ -525,11 +525,20 @@ def hpclipitem(image, timein, timeout, start, end,current_path, user, buddy):
         else:
             pass
     elif buddy == 'anomalies':
-        print('here buddy False')
+        print('here anomalies False')
         if user == 'matsuri':
             pathurl.text= current_path+"\\"+r"pysrc\anomalies\japan"+"\\"+image
         elif user == 'rimgosu' or user == 'duckdragon' or user == 'zanyang':
             pathurl.text= current_path+"\\"+r"pysrc\anomalies"+"\\"+image
+        else:
+            pass
+    elif buddy == 'trinket':
+        print('here trinket False')
+        if user == 'matsuri':
+            pathurl.text= current_path+"\\"+r"pysrc\trinket\japan"+"\\"+image
+        elif user == 'rimgosu' or user == 'duckdragon' or user == 'zanyang':
+            pathurl.text= current_path+"\\"+r"pysrc\trinket"+"\\"+image
+            print(image)
         else:
             pass
     else:
@@ -1052,7 +1061,9 @@ def run_tree(
     heropower,
     newminion_forxml,
     newminion_patchday,
-    anomalies=''
+    anomalies='',
+    trinket=[],
+    trinketframe=[]
     ):
     videopy = VideoFileClip(input_path + "/" + video)
     total_duration = videopy.end * fr
@@ -1216,7 +1227,7 @@ def run_tree(
                 'False'
                 )
             trackquest.append(clipheropower)
-
+        if anomalies:
             # for anomalies
             print(anomalies)
             anomalies_display_start = heropower_display_end
@@ -1245,6 +1256,40 @@ def run_tree(
                 'anomalies'
                 )
             trackquest.append(clipheropower)
+    
+        # for trinket
+        if trinket:
+            for j in trinket:
+                trinketindex = trinket.index(j)
+                print(trinket)
+                print(trinketframe[trinketindex])
+                trinket_display_start = str(in_to_start(start_index_frame, end_index_frame, trinketframe[trinketindex]))
+                trinket_display_end = str(in_to_start(start_index_frame, end_index_frame, trinketframe[trinketindex]) + 300)
+                clipscroll = scrollclipitem(
+                    'hpbackup.png',
+                    video, 
+                    trinket_display_start, 
+                    trinket_display_end, 
+                    trinket_display_start, 
+                    trinket_display_end, 
+                    current_path,
+                    buddybackup_path,
+                    buddy='trinket'
+                    )
+                trackscroll.append(clipscroll)
+
+                clipheropower = hpclipitem(
+                    j,
+                    trinket_display_start, 
+                    trinket_display_end, 
+                    trinket_display_start, 
+                    trinket_display_end,  
+                    current_path,
+                    user,
+                    'trinket'
+                    )
+                print('cliperopower')
+                trackquest.append(clipheropower)
 
             
             # #for buddy

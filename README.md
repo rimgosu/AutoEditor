@@ -12,7 +12,7 @@
 ## 사용된 기술
 - AutoEditor는 **Python**으로 제작되었습니다.
 - **OpenCV, yolov5, FFMPEG, moviepy** 라이브러리를 사용해 영상을 분석합니다.
-- yolov5를 활용하여 이미지 분석을 하였습니다. **3493개**의 이미지 데이터 학습하여 38개 종류를 구분합니다.
+- yolov5를 활용하여 이미지 분석을 하였습니다. [3493개의 이미지 데이터 학습](https://github.com/rimgosu/auto-editor-train-backup)하여 38개 종류를 구분합니다.
 - 분석된 영상을 ElementTree XML API를 이용해 **.xml** 파일로 영상 정보를 담습니다.
 - NVIDIA 그래픽 카드를 사용하면 **CUDA**를 이용해 더 빠른 작업을 할 수 있습니다.
 
